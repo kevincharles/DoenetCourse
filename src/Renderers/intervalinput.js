@@ -100,8 +100,8 @@ export default class IntervalInput extends DoenetRenderer {
   }
 
   xValueToXPosition(xValue){
-    let minValue = -10;
-    let maxValue = 10;
+    // let minValue = -10;
+    // let maxValue = 10;
     //Shift to positive numbers
     //TODO: Calculate shiftAmount and intervalValueWidth
     let shiftAmount = 10;
@@ -113,8 +113,12 @@ export default class IntervalInput extends DoenetRenderer {
   }
 
   xPositionToXValue(xPosition){
-    let centerX = xPosition - 8;
-    return 0;
+    let relativeX = xPosition - this.firstHashXPosition;
+    let shiftAmount = 10;
+    let intervalValueWidth = 1;
+    let value = relativeX/this.xBetweenHashes * intervalValueWidth;
+    value = value - shiftAmount;
+    return value;
   }
 
   buildPoints(){
@@ -233,7 +237,6 @@ export default class IntervalInput extends DoenetRenderer {
         );
       }
       console.log(`lowerXPosition ${lowerXPosition} higherXPosition ${higherXPosition}`)
-      console.log(`lowerLine ${lowerLine} higherLine ${higherLine}`)
       this.storedLines.push (
         <line
           key={lineKey}
@@ -251,6 +254,11 @@ export default class IntervalInput extends DoenetRenderer {
   }
 
   handleInput(e, inputState) {
+
+    if (inputState === "up"){
+      let xPosition = this.xPositionToXValue(e.clientX);
+      console.log(xPosition)
+    }
   }
 
   switchMode(mode){
@@ -268,8 +276,6 @@ export default class IntervalInput extends DoenetRenderer {
     this.buildLine();
     this.buildPoints();
     this.buildIntervals();
-    console.log("this.storedLines")
-    console.log(this.storedLines)
 
     const activeButtonColor = "lightblue";
   const inactiveButtonColor = "lightgrey";
