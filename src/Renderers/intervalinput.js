@@ -4,18 +4,15 @@ import styled from "styled-components";
 
 
 
-{/* <intervalinput width="4px" height="100px">
-<xmin>-10</xmin>
-<xmax>10</xmax>
-<interval>[1,2]</interval>
-  <interval>(3,4)</interval>
-<point>7</point>
-<point>6</point>
+{/* 
+ <intervalinput width="4px" height="100px">
+  <xmin>-10</xmin>
+  <xmax>10</xmax>
+  <interval>(-6,2]</interval>
+  <interval>[3,8)</interval>
+  <point>6</point>
 </intervalinput>
-<!--
-<ref>_interval1</ref> 
-
-<ref prop="interval1">_intervalinput1</ref> --> */}
+*/}
 
 const TextNoSelect = styled.text`
   -webkit-user-select: none;
