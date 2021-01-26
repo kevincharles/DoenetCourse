@@ -29,7 +29,7 @@ const consumer = kafka.consumer({ groupId: "chatTestGroup" });
 run(consumer).catch((e) => console.error(`kafkajs: ${e.message}`, e));
 
 io.on("connection", (socket) => {
-    console.log("connecting", socket);
+    // console.log("connecting", socket);
     socket.join("chat");
     socket.emit("message", {
         userId: "Server",
@@ -38,8 +38,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        console.log("disconnecting", socket);
+        // console.log("disconnecting", socket);
     });
 });
 
-httpServer.listen(81);
+httpServer.listen(51217);

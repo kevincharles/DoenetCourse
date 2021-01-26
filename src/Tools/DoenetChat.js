@@ -48,7 +48,7 @@ export default function DoenetChat(props) {
     const [chatLog, setCL] = useState([]);
 
     useEffect(() => {
-        const socket = io("localhost:81");
+        const socket = io("localhost:51217");
         socket.on("connect", () => {});
         socket.on("connect_error", () => {});
 

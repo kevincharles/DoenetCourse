@@ -67,7 +67,7 @@ services:
       - ..:/home/node/app
     command: 'npm run realtime'
     ports:
-      - '81:81'
+      - '51217:51217'
 
 
 volumes:
