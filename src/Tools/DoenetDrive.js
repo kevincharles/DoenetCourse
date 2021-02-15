@@ -274,7 +274,7 @@ const updateItemHistorySelector = selectorFamily({
         }
     
         if (!draft){
-          set(itemHistoryAtom(branchId),(oldVersions)=>{return [...oldVersions,newVersion]})
+          set(itemHistoryAtom(branchId),(oldVersions)=>{return [newVersion,...oldVersions]})
           set(fileByContentId(contentId),{data:doenetML})
         }else{
           set(fileByContentId(branchId),{data:doenetML})
@@ -338,8 +338,10 @@ function VersionHistoryPanel(props){
 
     let versions = [];
   for (let version of versionHistory.contents){
-    // console.log(">>>version",version)
-      if (version.isDraft !== "1"){
+
+  
+
+      
       // let nameItButton = <button>Name Version</button>;
 
       let titleText = version.timestamp;
@@ -348,7 +350,10 @@ function VersionHistoryPanel(props){
       if (version.isNamed === "1"){
         titleText = version.title;
       }
-
+      if (version.isDraft === "1"){
+        titleText = "Current Version";
+      }
+      
       let drawer = null;
       let versionStyle = {};
 
@@ -400,7 +405,7 @@ function VersionHistoryPanel(props){
         {drawer}
         </React.Fragment> )
 
-    }
+    
   }
 
   //   setVersion({instructions:{type:"Name Current Version"}}) }}>Name Version</button>
