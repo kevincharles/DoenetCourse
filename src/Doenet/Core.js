@@ -12,6 +12,9 @@ import createStateProxyHandler from './StateProxyHandler';
 import { postProcessCopy } from './utils/copy';
 import { flattenDeep, mapDeep } from './utils/array';
 import { DependencyHandler } from './Dependencies';
+import sha256 from 'crypto-js/sha256';
+import Hex from 'crypto-js/enc-hex'
+import { ancestorsIncludingComposites } from './utils/descendants';
 
 // string to componentClass: this.allComponentClasses["string"]
 // componentClass to string: componentClass.componentType
@@ -1502,12 +1505,14 @@ export default class Core {
         compositesBeingExpanded,
       });
 
-      this.dependencies.updateReplacementDependencies(component, updatesNeeded, compositesBeingExpanded);
-
       // TODO: make this more specific so just updates descendants
       // of direct parent of composite, as that's the only one that would see
       // replacements as a descendant?
-      this.dependencies.updateDescendantDependencies(component, updatesNeeded, compositesBeingExpanded);
+      // this.dependencies.updateDescendantDependencies(component, updatesNeeded, compositesBeingExpanded);
+      updatesNeeded.parentsToUpdateDescendants.add(component.componentName);
+      for (let ancestorName of ancestorsIncludingComposites(component, this.components)) {
+        updatesNeeded.parentsToUpdateDescendants.add(ancestorName);
+      }
 
       // record that are finished expanding the composite
       let targetInd = compositesBeingExpanded.indexOf(component.componentName);
@@ -1551,12 +1556,14 @@ export default class Core {
       throw Error(`Invalid createSerializedReplacements of ${component.componentName}`);
     }
 
-    this.dependencies.updateReplacementDependencies(component, updatesNeeded, compositesBeingExpanded);
-
     // TODO: make this more specific so just updates descendants
     // of direct parent of composite, as that's the only one that would see
     // replacements as a descendant?
-    this.dependencies.updateDescendantDependencies(component, updatesNeeded, compositesBeingExpanded);
+    // this.dependencies.updateDescendantDependencies(component, updatesNeeded, compositesBeingExpanded);
+    updatesNeeded.parentsToUpdateDescendants.add(component.componentName);
+    for (let ancestorName of ancestorsIncludingComposites(component, this.components)) {
+      updatesNeeded.parentsToUpdateDescendants.add(ancestorName);
+    }
 
     // record that are finished expanding the composite
     let targetInd = compositesBeingExpanded.indexOf(component.componentName);
@@ -1592,6 +1599,8 @@ export default class Core {
     this.parameterStack.pop();
 
     component.replacements = replacementResult.components;
+    this.dependencies.updateReplacementDependencies(component, updatesNeeded, compositesBeingExpanded);
+
     component.isExpanded = true;
 
     // record for top level replacement that they are a replacement of composite
@@ -2818,6 +2827,8 @@ export default class Core {
           // have an array variable name that is created on the fly
           // rather than being specified in original definition.
           stateDef = stateVariableDefinitions[varName] = {};
+        } else {
+          continue;
         }
       }
 
@@ -3712,6 +3723,8 @@ export default class Core {
       // don't need to change inverseDefinition
 
     } else {
+      // not entireArrayAtOnce
+
       // create returnDependencies function from returnArrayDependenciesByKey
       stateVarObj.returnDependencies = function (args) {
         // console.log(`return dependencies for array ${stateVariable} of ${component.componentName}`)
@@ -5323,9 +5336,19 @@ export default class Core {
         continue;
       }
 
+      let isArraySize = false;
+      let lowerCaseNameMinusSize = lowerCaseVarName;
+      if (lowerCaseVarName.substring(0, 13) === "__array_size_") {
+        isArraySize = true;
+        lowerCaseNameMinusSize = lowerCaseVarName.substring(13);
+      }
+
       for (let aliasName in stateVarInfo.aliases) {
-        if (lowerCaseVarName === aliasName.toLowerCase()) {
+        if (lowerCaseNameMinusSize === aliasName.toLowerCase()) {
           // don't substitute alias here, just fix case
+          if (isArraySize) {
+            aliasName = "__array_size_" + aliasName;
+          }
           newVariables.push(aliasName);
           foundMatch = true;
           break;
@@ -5417,11 +5440,17 @@ export default class Core {
 
 
     for (let stateVariable of stateVariables) {
-      if (stateVariable in stateVarInfo.aliases) {
-        newVariables.push(stateVarInfo.aliases[stateVariable])
-      } else {
-        newVariables.push(stateVariable)
+      let isArraySize = false;
+      if (stateVariable.substring(0, 13) === "__array_size_") {
+        isArraySize = true;
+        stateVariable = stateVariable.substring(13);
       }
+      stateVariable = stateVariable in stateVarInfo.aliases ?
+        stateVarInfo.aliases[stateVariable] : stateVariable;
+      if (isArraySize) {
+        stateVariable = "__array_size_" + stateVariable;
+      }
+      newVariables.push(stateVariable)
     }
 
     return newVariables;
@@ -5633,6 +5662,13 @@ export default class Core {
             && varName !== "__childLogic" && !componentDeleted
             && !(varName in this.components[componentName].state) && !stateVariableDeleted
           ) {
+            // if component was recreated, wait to see if the state variable
+            // (presumably an array entry) is recreated
+            // TODO: will there be a case where the state variable is not recreatd
+            // such as when have a different component?
+            if(updatesNeeded.recreatedComponents[componentName]) {
+              continue;
+            }
             throw Error(`Reference to invalid state variable ${varName} of ${componentName}`);
           }
 
@@ -6793,6 +6829,7 @@ export default class Core {
             }
             rdObj.push({ ind: ind, replacement: composite.replacements[ind] });
             composite.replacements.splice(ind, 1);
+            this.dependencies.updateReplacementDependencies(composite, updatesNeeded, compositesBeingExpanded);
 
             // TODO: if have stateVariable dependencies that depend on replacements
             // these will need to be modified
@@ -6868,6 +6905,7 @@ export default class Core {
         while (rdObj.length > 0) {
           let rdInfo = rdObj.pop();
           downDepComponent.replacements.splice(rdInfo.ind, 0, rdInfo.replacement)
+          this.dependencies.updateReplacementDependencies(downDepComponent, updatesNeeded, compositesBeingExpanded);
         }
       }
 
@@ -6906,16 +6944,18 @@ export default class Core {
 
     for (let compositeName in replacementsDeleted) {
       if (!(compositeName in componentsToDelete)) {
-        this.dependencies.updateReplacementDependencies(
-          this._components[compositeName], updatesNeeded, compositesBeingExpanded
-        );
 
         // TODO: make this more specific so just updates descendants
         // of direct parent of composite, as that's the only one that would see
         // replacements as a descendant?
-        this.dependencies.updateDescendantDependencies(
-          this._components[compositeName], updatesNeeded, compositesBeingExpanded
-        );
+        // this.dependencies.updateDescendantDependencies(
+        //   this._components[compositeName], updatesNeeded, compositesBeingExpanded
+        // );
+
+        updatesNeeded.parentsToUpdateDescendants.add(compositeName);
+        for (let ancestorName of ancestorsIncludingComposites(this._components[compositeName], this.components)) {
+          updatesNeeded.parentsToUpdateDescendants.add(ancestorName);
+        }
 
       }
     }
@@ -7093,7 +7133,10 @@ export default class Core {
       if (change.changeType === "add") {
 
         if (change.replacementsToWithhold !== undefined) {
-          this.adjustReplacementsToWithhold(component, change, componentChanges);
+          this.adjustReplacementsToWithhold({
+            component, change, componentChanges,
+            updatesNeeded, compositesBeingExpanded
+          });
         }
 
         let unproxiedComponent = this._components[component.componentName];
@@ -7217,6 +7260,7 @@ export default class Core {
 
             // splice in new replacements
             composite.replacements.splice(firstIndex, 0, ...newReplacements);
+            this.dependencies.updateReplacementDependencies(composite, updatesNeeded, compositesBeingExpanded);
 
             // record for top level replacement that they are a replacement of composite
             for (let comp of newReplacements) {
@@ -7271,7 +7315,10 @@ export default class Core {
       } else if (change.changeType === "delete") {
 
         if (change.replacementsToWithhold !== undefined) {
-          this.adjustReplacementsToWithhold(component, change, componentChanges);
+          this.adjustReplacementsToWithhold({
+            component, change, componentChanges,
+            updatesNeeded, compositesBeingExpanded
+          });
         }
 
         let compsitesDeletedFrom = this.deleteReplacementsFromShadowsThenComposite({
@@ -7329,7 +7376,10 @@ export default class Core {
 
         if (change.replacementsToWithhold !== undefined) {
           let compositesWithAdjustedReplacements =
-            this.adjustReplacementsToWithhold(component, change, componentChanges);
+            this.adjustReplacementsToWithhold({
+              component, change, componentChanges,
+              updatesNeeded, compositesBeingExpanded
+            });
 
           changedReplacementIdentitiesOfComposites.push(...compositesWithAdjustedReplacements);
 
@@ -7343,13 +7393,10 @@ export default class Core {
 
     for (let compositeName of changedReplacementIdentitiesOfComposites) {
       let composite = this._components[compositeName]
-      this.dependencies.updateReplacementDependencies(composite, updatesNeeded, compositesBeingExpanded);
-
-      // TODO: make this more specific so just updates descendants
-      // of direct parent of composite, as that's the only one that would see
-      // replacements as a descendant?
-      this.dependencies.updateDescendantDependencies(composite, updatesNeeded, compositesBeingExpanded);
-
+      updatesNeeded.parentsToUpdateDescendants.add(composite.componentName);
+      for (let ancestorName of ancestorsIncludingComposites(composite, this.components)) {
+        updatesNeeded.parentsToUpdateDescendants.add(ancestorName);
+      }
     }
 
     let results = {
@@ -7429,6 +7476,7 @@ export default class Core {
 
       // delete from replacements
       let replacementsToDelete = composite.replacements.splice(firstIndex, numberToDelete);
+      this.dependencies.updateReplacementDependencies(composite, updatesNeeded, compositesBeingExpanded);
 
       // TODO: why does this delete delete upstream components
       // but the non toplevel delete doesn't?
@@ -7698,7 +7746,9 @@ export default class Core {
 
   }
 
-  adjustReplacementsToWithhold(component, change, componentChanges) {
+  adjustReplacementsToWithhold({ component, change, componentChanges,
+    updatesNeeded, compositesBeingExpanded
+  }) {
 
     let compositesWithAdjustedReplacements = [];
 
@@ -7752,11 +7802,15 @@ export default class Core {
       componentChanges.push(newChange);
     }
     component.replacementsToWithhold = replacementsToWithhold;
+    this.dependencies.updateReplacementDependencies(component, updatesNeeded, compositesBeingExpanded);
 
     if (component.shadowedBy) {
       for (let shadowingComponent of component.shadowedBy) {
         let additionalcompositesWithAdjustedReplacements =
-          this.adjustReplacementsToWithhold(shadowingComponent, change, componentChanges);
+          this.adjustReplacementsToWithhold({
+            component: shadowingComponent, change, componentChanges,
+            updatesNeeded, compositesBeingExpanded
+          });
         compositesWithAdjustedReplacements.push(...additionalcompositesWithAdjustedReplacements)
       }
     }
@@ -8062,25 +8116,30 @@ export default class Core {
 
     // merge new variables changed from newStateVariableValues into changedStateVariables
     for (let cName in newStateVariableValues) {
-      let changedSvs = this.changedStateVariables[cName];
-      if (!changedSvs) {
-        changedSvs = this.changedStateVariables[cName] = {};
-      }
-      for (let vName in newStateVariableValues[cName]) {
-        let sVarObj = this._components[cName].state[vName];
-        if (sVarObj.isArray) {
-          if (!changedSvs[vName]) {
-            changedSvs[vName] = new Set();
-          }
-          for (let key in newStateVariableValues[cName][vName]) {
-            if (key === "mergeObject") {
-              continue;
+      let component = this._components[cName];
+      if (component) {
+        let changedSvs = this.changedStateVariables[cName];
+        if (!changedSvs) {
+          changedSvs = this.changedStateVariables[cName] = {};
+        }
+        for (let vName in newStateVariableValues[cName]) {
+          let sVarObj = component.state[vName];
+          if (sVarObj) {
+            if (sVarObj.isArray) {
+              if (!changedSvs[vName]) {
+                changedSvs[vName] = new Set();
+              }
+              for (let key in newStateVariableValues[cName][vName]) {
+                if (key === "mergeObject") {
+                  continue;
+                }
+                changedSvs[vName].add(key);
+              }
+            } else {
+              // shouldn't have arrayEntries, so don't need to check
+              changedSvs[vName] = true;
             }
-            changedSvs[vName].add(key);
           }
-        } else {
-          // shouldn't have arrayEntries, so don't need to check
-          changedSvs[vName] = true;
         }
       }
 
