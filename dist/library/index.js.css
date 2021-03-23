@@ -1,268 +1,3 @@
-body {
-  background-color: rgb(246, 248, 255);
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-}
-button {
-  outline: none;
-}
-
-.leftpanel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 1vh;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  background-color: #8fb8de;
-  border-right: 3px solid #e2e2e2;
-  /* background-repeat: repeat-y; */
-  /* background-image: url('../../media/doenet_bg.png'); */
-}
-
-.middlepanel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 1vh;
-  overflow: hidden;
-  background-color: white;
-}
-
-.rightpanel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 1vh;
-  overflow: hidden;
-  background-color: white;
-}
-
-.column-resizer {
-  cursor: col-resize;
-}
-
-.left-resizer {
-  cursor: e-resize;
-}
-
-.right-resizer {
-  cursor: w-resize;
-}
-
-.resizer {
-  width: 3px;
-  position: relative;
-  flex-shrink: 0;
-  background-color: #e3e3e3;
-  opacity: 0.5;
-}
-
-.panels-header-content {
-  min-height: 95px;
-  max-height: 95px;
-  margin: 0px;
-  background-color: white;
-  border-bottom: 1px solid #e3e2e2;
-}
-.panels-header-controls {
-  display: flex;
-  height: 100%;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-}
-
-.leftCloseButton {
-  width: 40px;
-  height: 40px;
-  background-color: white;
-  border: 1px solid #e3e2e2;
-  padding: 2px 14px;
-  font-size: 16px;
-  cursor: pointer;
-  position: fixed;
-  top: 92%;
-  left: 1%;
-  z-index: 10000;
-}
-.circle {
-  color: #8fb8de;
-  border-radius: 50%;
-  height: 40px;
-  width: 40px;
-}
-.custom {
-  color: #288ae9;
-  border-radius: 20px 0px 0px 20px;
-  height: 40px;
-  width: 28px;
-}
-.rightCloseButton {
-  width: 28px;
-  height: 40px;
-  background-color: white;
-  border-radius: 0 20px 20px 0;
-  margin: 10px 0 10px 0;
-
-  border: 1px solid #e3e2e2;
-  padding: 2px 4px;
-  font-size: 16px;
-  cursor: pointer;
-}
-.middleLeftButton {
-  width: 40px;
-  height: 40px;
-  background-color: white;
-  border-radius: 50%;
-  border: 1px solid #e3e2e2;
-  padding: 6px 12px;
-  font-size: 16px;
-  cursor: pointer;
-  position: fixed;
-  top: 92%;
-  left: 1%;
-  z-index: 10000;
-}
-.middleRightButton {
-  width: 28px;
-  height: 40px;
-  background-color: white;
-  border-radius: 20px 0 0 20px;
-  margin: 10px 0 10px 0;
-  float: right;
-  border: 1px solid #e3e2e2;
-  padding: 2px 8px;
-  font-size: 16px;
-  cursor: pointer;
-  order: 1;
-}
-
-@media only screen and (max-width: 767px) {
-  .footer-on {
-    margin-bottom: 30px;
-  }
-
-  .phonebuttoncontainer {
-    display: flex;
-    width: 100%;
-    bottom: 0.1px;
-    left: 0px;
-    position: fixed;
-    z-index: 5;
-    text-align: center;
-    height: 30px;
-  }
-
-  .phonebuttoncontainershrinked {
-    display: flex;
-    width: 61%;
-    bottom: 0.1px;
-    left: 200px;
-    position: fixed;
-    z-index: 5;
-    text-align: center;
-    height: 30px;
-  }
-
-  .phonebutton {
-    color: white;
-    background-color: black;
-    width: 100%;
-    height: 30px;
-  }
-  /* .leftCloseButton{
-  display:none;
-} */
-  .rightCloseButton {
-    display: none;
-  }
-  /* .middleLeftButton{
-display: none;
-
-} */
-  .middleRightButton {
-    display: none;
-  }
-}
-
-/* SECTION: BASIC STYLES */
-.switch {
-  font-size: 18px;
-  font-family: sans-serif;
-}
-
-.switch label {
-  position: relative;
-  display: inline-flex;
-  width: 2.5em;
-  min-height: 1em;
-  vertical-align: top;
-  isolation: isolate;
-  align-items: flex-start;
-  cursor: pointer;
-  margin-right: 1em;
-}
-
-.switch input {
-  position: absolute;
-  opacity: 0;
-  box-sizing: border-box;
-  height: 1em;
-  width: 3em;
-  z-index: 1;
-  color: black;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.switch-visual {
-  position: relative;
-  display: flex;
-  cursor: pointer;
-  width: 2em;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 1em;
-  border-width: .5em;
-  order: 0;
-}
-
-.switch-visual::before{
-  content: "";
-  height: 1em;
-  width: 1em;
-  left: 0;
-  bottom: 0;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-input:checked + .switch-visual {
-  background-color: #2196F3;
-}
-
-input:focus + .switch-visual {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .switch-visual:before {
-  -webkit-transform: translateX(1em);
-  -ms-transform: translateX(1em);
-  transform: translateX(1em);
-}
-
-.switch-text {
-  display: block;
-}
 .headingContainer{
   display: flex;
   /* position: fixed; */
@@ -666,6 +401,28 @@ input:checked + .switch-visual:before {
 .nooutline {
   outline: none;
 }
+
+* {
+  outline: none;
+}
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.nooutline {
+  outline: none;
+}
+
+.mainPanelStyle{
+  width:100%;
+  height:100%;
+}
 /* BASICS */
 
 .CodeMirror {
@@ -687,7 +444,7 @@ input:checked + .switch-visual:before {
 }
 
 .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-  background-color: transparent; /* The little square between H and V scrollbars */
+  background-color: white; /* The little square between H and V scrollbars */
 }
 
 /* GUTTER */
@@ -1152,79 +909,30 @@ span.CodeMirror-selectedtext { background: none; }
   text-decoration: underline;
   color: white !important;
 }
-.color-picker-menu-button {
-    border: none;
-    width: 20px;
-    background: rgba(0, 0, 0, 0);
-    cursor: pointer;
-  }
-  
-  .color-list {
-    padding: 4px;
-    list-style-type: none;
-    /* border: 1px solid #505050; */
-    border-radius: 3px;
-    box-shadow: 3px 3px 7px #888888;
-    background: #ffffff;
-    margin: 0 auto;
-    text-align: left;
-  }
-
-  .color-box:checked {
-    border: 1px solid yellow;
-  }
-
-  .list-container {
-      margin-right: 0;
-      margin-left: auto;
-      width: 86px;
-  }
-  
-  .color-item {
-    display: inline-block;
-    vertical-align: top;
-  }
-  
-  .dropdown-container {
-    /* vertical-align: top; */
-    width: 100%;
-    /* left: 140px; */
-    text-align: right;
-    /* width: 86px; */
-    /* z-index: 1; */
-    /* position: absolute; */
-    /* height: 50px; */
-  }
-  
 .drivecardContainer * {
   box-sizing: border-box;
   user-select: none;
 }
 
 .drivecardContainer {
+  margin: 0;
+  width: 100%;
+  justify-content: center;
+  overflow:hidden;
+}
+
+.list {
   position: relative;
   font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto,
     segoe ui, arial, sans-serif;
   width: 100%;
-  height: 100%;
-}
-.drivecardlist{
-  position: relative;
-  background-size: cover;
-  background-position: center center;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  padding: 15px;
+  overflow-y: scroll;
   text-transform: uppercase;
   font-size: 10px;
   line-height: 10px;
   border-radius: 4px;
-  box-shadow: 0px 10px 50px -10px rgba(0, 0, 0, 0.2);
   outline:none;
-}
-
-.borderselection{
-  border : 2px solid black;
 }
 .adiv {
   position: absolute;
@@ -1232,5 +940,51 @@ span.CodeMirror-selectedtext { background: none; }
   padding: 15px;
 }
 
+/*
+Copyright (C) 2011 by MarkLogic Corporation
+Author: Mike Brevoort <mike@brevoort.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+.cm-s-xq-light span.cm-keyword { line-height: 1em; font-weight: bold; color: #5A5CAD; }
+.cm-s-xq-light span.cm-atom { color: #6C8CD5; }
+.cm-s-xq-light span.cm-number { color: #164; }
+.cm-s-xq-light span.cm-def { text-decoration:underline; }
+.cm-s-xq-light span.cm-variable { color: black; }
+.cm-s-xq-light span.cm-variable-2 { color:black; }
+.cm-s-xq-light span.cm-variable-3, .cm-s-xq-light span.cm-type { color: black; }
+.cm-s-xq-light span.cm-property {}
+.cm-s-xq-light span.cm-operator {}
+.cm-s-xq-light span.cm-comment { color: #0080FF; font-style: italic; }
+.cm-s-xq-light span.cm-string { color: red; }
+.cm-s-xq-light span.cm-meta { color: yellow; }
+.cm-s-xq-light span.cm-qualifier { color: grey; }
+.cm-s-xq-light span.cm-builtin { color: #7EA656; }
+.cm-s-xq-light span.cm-bracket { color: #cc7; }
+.cm-s-xq-light span.cm-tag { color: #3F7F7F; }
+.cm-s-xq-light span.cm-attribute { color: #7F007F; }
+.cm-s-xq-light span.cm-error { color: #f00; }
+
+.cm-s-xq-light .CodeMirror-activeline-background { background: #e8f2ff; }
+.cm-s-xq-light .CodeMirror-matchingbracket { outline:1px solid grey;color:black !important;background:yellow; }
 
 
+.CodeMirror { 
+  height: calc(100vh - 84px) !important;
+}
