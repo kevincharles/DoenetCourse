@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, Suspense } from "react";
 import Tool from "../imports/Tool/Tool";
 import {driveColors,driveImages} from '../imports/Util';
-import DoenetDriveCardMenu from "../imports/DoenetDriveCardMenu";
 import { useToolControlHelper } from "../imports/Tool/ToolRoot";
 import { useToast } from "../imports/Tool/Toast";
 
@@ -52,12 +51,13 @@ import { BreadcrumbContainer } from "../imports/Breadcrumb";
 import GlobalFont from "../fonts/GlobalFont.js";
 import axios from "axios";
 // import Button from "../imports/PanelHeaderComponents/Button.js";
-import DoenetViewer from './DoenetViewer';
-import {Controlled as CodeMirror} from 'react-codemirror2'
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/material.css';
+// import DoenetViewer from './DoenetViewer';
+// import {Controlled as CodeMirror} from 'react-codemirror2'
+// import 'codemirror/lib/codemirror.css';
+// import 'codemirror/theme/material.css';
 import "../imports/drivecard.css";
 import DriveCards from "../imports/DriveCards";
+import ColorImagePicker from "../imports/PanelHeaderComponents/ColorImagePicker";
 
 
 function Container(props){
@@ -437,7 +437,8 @@ const DriveInfoPanel = function(props){
   }}/></label>
   <br />
   <br />
-  <DoenetDriveCardMenu
+  <ColorImagePicker />
+  {/* <DoenetDriveCardMenu
   key={`colorMenu${props.driveId}`}
   colors={driveColors} 
   initialValue={props.color}
@@ -450,7 +451,7 @@ const DriveInfoPanel = function(props){
           type:"update drive color"
         })
   }}
-  />
+  /> */}
   <br />
   <br />
   {deleteCourseButton}
