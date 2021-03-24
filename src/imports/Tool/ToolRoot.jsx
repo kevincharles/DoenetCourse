@@ -160,7 +160,7 @@ export default function ToolRoot({ tool }) {
   return (
     <>
       {/* <GlobalStyle /> */}
-      <AtomLogger />
+      {/* <AtomLogger /> */}
       {tool}
       {/* {overlays.map((layer, idx) =>
         idx == overlays.length - 1 ? layer : null
