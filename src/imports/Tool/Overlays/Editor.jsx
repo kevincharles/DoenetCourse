@@ -51,7 +51,10 @@ const fileByContentId = atomFamily({
       if (!contentId){
         return "";
       }
-      return await axios.get(`/media/${contentId}`) 
+      // return await axios.get(`/media/${contentId}`) 
+      const resp = await axios.get(`/media/${contentId}`)
+      console.log(">>>resp",resp)
+      return resp;
     }
   })
   
@@ -576,11 +579,12 @@ const editorViewerScrollBeforeUpdateHeightAtom = atom({
 })
 
 export default function Editor({ branchId, title }) {
-  // console.log("===Editor!");
+  console.log("===Editor!",branchId,title);
   const viewerRef = useRef(null);
   const setEditorViewerScrollHeight = useSetRecoilState(editorViewerScrollHeightAtom);
 
   let initDoenetML = useRecoilCallback(({snapshot,set})=> async (contentId)=>{
+    console.log(">>>initDoenetML",contentId)
     const response = await snapshot.getPromise(fileByContentId(contentId));
     const doenetML = response.data;
     set(editorDoenetMLAtom,doenetML);
