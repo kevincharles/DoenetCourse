@@ -152,8 +152,9 @@ function AtomLogger(props){
   const myatom = useRecoilValue(layerStackAtom);
   console.log(">>>ToolRoot myatom",myatom)
   useEffect(()=>{
-    console.log(">>>changed!")
-    if (props.callback){
+    if (props.callback && myatom.length > 0){
+      console.log(">>>callback!")
+
       props.callback((num)=>num+1)
     }
   },[myatom])
