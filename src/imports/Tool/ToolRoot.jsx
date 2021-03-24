@@ -131,7 +131,7 @@ function AtomLogger(props){
   useEffect(()=>{
     console.log(">>>myatom changed!",myatom,myatom.length,init.current)
     // if (props.callback && !init.current){
-      if (props.callback && myatom.length > 0){
+      if (props.callback && myatom.length > 0 || !init.current){
         console.log(">>>callback!!!")
       props.callback((num)=>num+1)
       init.current = false;
