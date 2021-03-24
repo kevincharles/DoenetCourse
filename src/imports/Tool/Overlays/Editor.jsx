@@ -583,21 +583,22 @@ export default function Editor({ branchId, title }) {
   let initDoenetML = useRecoilCallback(({snapshot,set})=> async (contentId)=>{
     const response = await snapshot.getPromise(fileByContentId(contentId));
     const doenetML = response.data;
-    set(editorDoenetMLAtom,doenetML);
-    const viewerObj = await snapshot.getPromise(viewerDoenetMLAtom);
-    const updateNumber = viewerObj.updateNumber+1;
-    set(viewerDoenetMLAtom,{updateNumber,doenetML})
+    console.log(">>>doenetML",doenetML)
+    // set(editorDoenetMLAtom,doenetML);
+    // const viewerObj = await snapshot.getPromise(viewerDoenetMLAtom);
+    // const updateNumber = viewerObj.updateNumber+1;
+    // set(viewerDoenetMLAtom,{updateNumber,doenetML})
     set(editorInitAtom,true);
   })
 
   const setEditorInit = useSetRecoilState(editorInitAtom);
 
-//   useEffect(() => {
-//     initDoenetML(branchId)
-//     return () => {
-//       setEditorInit(false);
-//     }
-// }, []);
+  useEffect(() => {
+    initDoenetML(branchId)
+    return () => {
+      setEditorInit(false);
+    }
+}, []);
 
 
 function setScrollHeight(height){
