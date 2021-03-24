@@ -583,11 +583,10 @@ export default function Editor({ branchId, title }) {
   let initDoenetML = useRecoilCallback(({snapshot,set})=> async (contentId)=>{
     const response = await snapshot.getPromise(fileByContentId(contentId));
     const doenetML = response.data;
-    console.log(">>>doenetML",doenetML)
-    // set(editorDoenetMLAtom,doenetML);
-    // const viewerObj = await snapshot.getPromise(viewerDoenetMLAtom);
-    // const updateNumber = viewerObj.updateNumber+1;
-    // set(viewerDoenetMLAtom,{updateNumber,doenetML})
+    set(editorDoenetMLAtom,doenetML);
+    const viewerObj = await snapshot.getPromise(viewerDoenetMLAtom);
+    const updateNumber = viewerObj.updateNumber+1;
+    set(viewerDoenetMLAtom,{updateNumber,doenetML})
     set(editorInitAtom,true);
   })
 
@@ -615,14 +614,14 @@ function setScrollHeight(height){
 
       <mainPanel>
         <div><DoenetViewerUpdateButton /></div>
-        <div
+        {/* <div
         ref={viewerRef}
          onScroll={()=>{
            setEditorViewerScrollHeight(viewerRef.current.scrollTop)
           }}
          style={{overflowY:"scroll", height:"calc(100vh - 84px)" }}>
            <DoenetViewerPanel setScrollHeight={setScrollHeight} />
-         </div>
+         </div> */}
       </mainPanel>
 
       <supportPanel isInitOpen>
