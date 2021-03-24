@@ -58,6 +58,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@handsontable/react": "^4.0.0",
     "axios": "^0.21.1",
+    "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "codemirror": "^5.59.4",
     "compromise": "^13.10.3",
     "compromise-numbers": "^1.2.0",
