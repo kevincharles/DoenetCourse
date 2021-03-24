@@ -592,12 +592,12 @@ export default function Editor({ branchId, title }) {
 
   const setEditorInit = useSetRecoilState(editorInitAtom);
 
-  useEffect(() => {
-    initDoenetML(branchId)
-    return () => {
-      setEditorInit(false);
-    }
-}, []);
+//   useEffect(() => {
+//     initDoenetML(branchId)
+//     return () => {
+//       setEditorInit(false);
+//     }
+// }, []);
 
 
 function setScrollHeight(height){
