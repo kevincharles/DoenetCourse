@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   atom,
   useSetRecoilState,
@@ -124,13 +124,25 @@ export const useStackId = () => {
   return stackId;
 };
 
-export default function LayerRoot({ tool }) {
+
+function AtomLogger(props){
+  const myatom = useRecoilValue(layerStackAtom);
+  useEffect(()=>{
+    if (props.callback && myatom.length > 0){
+      props.callback((num)=>num+1)
+    }
+  },[myatom])
+  return null;
+}
+
+export default function ToolRoot({ tool }) {
   const overlays = useRecoilValue(layerStackAtom);
+  const [workaround,setWorkaround] = useState(0);
 
   return (
     <>
       <GlobalStyle />
-
+      <AtomLogger callback={setWorkaround} />
       {tool}
       {overlays.map((layer, idx) =>
         idx == overlays.length - 1 ? layer : null
@@ -139,3 +151,4 @@ export default function LayerRoot({ tool }) {
     </>
   );
 }
+
