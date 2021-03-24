@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   atom,
   useSetRecoilState,
@@ -127,9 +127,11 @@ export const useStackId = () => {
 
 function AtomLogger(props){
   const myatom = useRecoilValue(layerStackAtom);
+  let init = useRef(true);
   useEffect(()=>{
-    if (props.callback && myatom.length > 0){
+    if (props.callback && !init.current){
       props.callback((num)=>num+1)
+      init.current = false;
     }
   },[myatom])
   return null;
