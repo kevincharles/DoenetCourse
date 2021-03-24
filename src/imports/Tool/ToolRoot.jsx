@@ -49,16 +49,24 @@ export const useToolControlHelper = () => {
     })
     switch (type.toLowerCase()) {
       case "editor":
-        setLayers((old) => {
-          console.log(">>>old",old)
-          return [
-          ...old,
-          <Editor
-            branchId={branchId}
-            title={title}
-            key={`EditorLayer${old.length + 1}`}
-          />,
-        ]});
+        console.log(">>>switch editor");
+        setLayers([<Editor key='temp'/>])
+        // setLayers((old) => {
+        //   console.log(">>>old",old)
+        //   const editor = <Editor
+        //   branchId={branchId}
+        //   title={title}
+        //   key={`EditorLayer${old.length + 1}`}
+        // />
+        // console.log(">>>editor",editor)
+        //   return [
+        //   ...old,
+        //   <Editor
+        //     branchId={branchId}
+        //     title={title}
+        //     key={`EditorLayer${old.length + 1}`}
+        //   />,
+        // ]});
         break;
       case "gradebookassignmentview":
         setLayers((old) => [
