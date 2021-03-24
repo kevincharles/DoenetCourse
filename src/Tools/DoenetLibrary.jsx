@@ -58,7 +58,13 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import "../imports/drivecard.css";
 import DriveCards from "../imports/DriveCards";
+import {layerStackAtom} from "../imports/Tool/ToolRoot.jsx";
 
+function AtomLogger(){
+  const myatom = useRecoilValue(layerStackAtom);
+  console.log(">>>myatom",myatom)
+  return null;
+}
 
 function Container(props){
   return <div
@@ -864,6 +870,7 @@ export default function DoenetLibraryTool(props) {
 
       <mainPanel>
       <AutoSelect />
+      <AtomLogger />
 
       {breadcrumbContainer}
         <div 
