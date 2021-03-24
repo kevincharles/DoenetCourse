@@ -37,6 +37,16 @@ export const useToolControlHelper = () => {
     attemptNumber,
     userId,
   }) => {
+    console.log(">>>in OpenOverlay",{
+      type,
+      title,
+      contentId,
+      courseId,
+      branchId,
+      assignmentId,
+      attemptNumber,
+      userId,
+    })
     switch (type.toLowerCase()) {
       case "editor":
         setLayers((old) => [

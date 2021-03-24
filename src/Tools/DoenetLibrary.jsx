@@ -875,6 +875,8 @@ export default function DoenetLibraryTool(props) {
           <Container>
           <Drive types={['content','course']}  urlClickBehavior="select" 
         doenetMLDoubleClickCallback={(info)=>{
+          console.log(">>>info",info)
+          console.log(">>>pass to openOverlay",{type:"editor",branchId: info.item.branchId,title: info.item.label})
           openOverlay({type:"editor",branchId: info.item.branchId,title: info.item.label});
           }}/>
           </Container>
