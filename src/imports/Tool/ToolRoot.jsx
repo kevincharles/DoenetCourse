@@ -15,6 +15,7 @@ import { useSupportPanelController } from "./Panels/SupportPanel";
 import { GlobalStyle } from "../../Tools/DoenetStyle";
 import GradebookAssignmentView from "./Overlays/GradebookAssignmentView";
 import GradebookAttemptView from "./Overlays/GradebookAttemptView";
+import { nanoid } from 'nanoid';
 // import doenetImage from "../../media/Doenet_Logo_cloud_only.png";
 
 const layerStackAtom = atom({
@@ -50,7 +51,9 @@ export const useToolControlHelper = () => {
     switch (type.toLowerCase()) {
       case "editor":
         console.log(">>>switch editor");
-        setLayers([<Editor key='temp'/>])
+        let randomNum = nanoid();
+        console.log(">>>num",randomNum)
+        setLayers([<Editor key={`temp${randomNum}`}/>])
         // setLayers((old) => {
         //   console.log(">>>old",old)
         //   const editor = <Editor
