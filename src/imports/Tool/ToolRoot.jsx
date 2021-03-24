@@ -53,7 +53,10 @@ export const useToolControlHelper = () => {
         console.log(">>>switch editor");
         let randomNum = nanoid();
         console.log(">>>num",randomNum)
-        setLayers([<Editor key={`temp${randomNum}`}/>])
+        setLayers([<Editor 
+            branchId={branchId}
+          title={title}
+          key={`temp${randomNum}`}/>])
         // setLayers((old) => {
         //   console.log(">>>old",old)
         //   const editor = <Editor
@@ -147,7 +150,7 @@ export const useStackId = () => {
   return stackId;
 };
 
-export default function LayerRoot({ tool }) {
+export default function ToolRoot({ tool }) {
   const overlays = useRecoilValue(layerStackAtom);
 
   console.log(">>>overlays",overlays)

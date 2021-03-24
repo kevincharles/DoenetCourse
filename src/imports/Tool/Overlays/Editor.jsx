@@ -584,6 +584,8 @@ export default function Editor({ branchId, title }) {
     <mainPanel><p>test</p></mainPanel>
   </Tool>
 }
+
+
   export  function Editor2({ branchId, title }) {
   console.log("===Editor!",branchId,title);
   const viewerRef = useRef(null);
