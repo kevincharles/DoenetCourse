@@ -49,14 +49,16 @@ export const useToolControlHelper = () => {
     })
     switch (type.toLowerCase()) {
       case "editor":
-        setLayers((old) => [
+        setLayers((old) => {
+          console.log(">>>old",old)
+          return [
           ...old,
           <Editor
             branchId={branchId}
             title={title}
             key={`EditorLayer${old.length + 1}`}
           />,
-        ]);
+        ]});
         break;
       case "gradebookassignmentview":
         setLayers((old) => [
@@ -137,6 +139,7 @@ export const useStackId = () => {
 export default function LayerRoot({ tool }) {
   const overlays = useRecoilValue(layerStackAtom);
 
+  console.log(">>>overlays",overlays)
   return (
     <>
       <GlobalStyle />
