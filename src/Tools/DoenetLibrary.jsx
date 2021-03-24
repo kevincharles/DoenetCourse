@@ -52,9 +52,9 @@ import { BreadcrumbContainer } from "../imports/Breadcrumb";
 import GlobalFont from "../fonts/GlobalFont.js";
 import axios from "axios";
 // import Button from "../imports/PanelHeaderComponents/Button.js";
-import DoenetViewer from './DoenetViewer';
-import {Controlled as CodeMirror} from 'react-codemirror2'
-import 'codemirror/lib/codemirror.css';
+// import DoenetViewer from './DoenetViewer';
+// import {Controlled as CodeMirror} from 'react-codemirror2'
+// import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import "../imports/drivecard.css";
 import DriveCards from "../imports/DriveCards";

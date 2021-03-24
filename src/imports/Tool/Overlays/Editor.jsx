@@ -541,7 +541,7 @@ function DoenetViewerPanel(props){
   let assignmentId = "myassignmentid";
   let solutionDisplayMode = "button";
 
-
+  return <p>{viewerDoenetML?.doenetML}</p>
   return <DoenetViewer
       key={"doenetviewer" + viewerDoenetML?.updateNumber}
       onCoreReady={onCoreReady}
@@ -614,14 +614,14 @@ function setScrollHeight(height){
 
       <mainPanel>
         <div><DoenetViewerUpdateButton /></div>
-        {/* <div
+        <div
         ref={viewerRef}
          onScroll={()=>{
            setEditorViewerScrollHeight(viewerRef.current.scrollTop)
           }}
          style={{overflowY:"scroll", height:"calc(100vh - 84px)" }}>
            <DoenetViewerPanel setScrollHeight={setScrollHeight} />
-         </div> */}
+         </div>
       </mainPanel>
 
       <supportPanel isInitOpen>

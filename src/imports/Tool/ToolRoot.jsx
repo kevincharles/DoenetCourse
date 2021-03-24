@@ -129,7 +129,8 @@ function AtomLogger(props){
   const myatom = useRecoilValue(layerStackAtom);
   let init = useRef(true);
   useEffect(()=>{
-    if (props.callback && !init.current){
+    // if (props.callback && !init.current){
+      if (props.callback && myatom > 0){
       props.callback((num)=>num+1)
       init.current = false;
     }
