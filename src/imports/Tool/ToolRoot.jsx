@@ -149,7 +149,7 @@ export const useStackId = () => {
 
 function AtomLogger(){
   const myatom = useRecoilValue(layerStackAtom);
-  console.log(">>>myatom2",myatom)
+  console.log(">>>ToolRoot myatom",myatom)
   return null;
 }
 
@@ -159,13 +159,13 @@ export default function ToolRoot({ tool }) {
   console.log(">>>ToolRoot overlays",overlays)
   return (
     <>
-      {/* <GlobalStyle /> */}
-      {/* <AtomLogger /> */}
+      <GlobalStyle />
+      <AtomLogger />
       {tool}
-      {/* {overlays.map((layer, idx) =>
+      {overlays.map((layer, idx) =>
         idx == overlays.length - 1 ? layer : null
       )}
-      <Toast /> */}
+      <Toast />
     </>
   );
 }
