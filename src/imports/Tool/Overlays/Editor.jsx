@@ -578,15 +578,15 @@ const editorViewerScrollBeforeUpdateHeightAtom = atom({
   default:{height:0,updatePushedFlag:false}
 })
 
-export default function Editor({ branchId, title }) {
-  console.log("===Editor!",branchId,title);
-  return <Tool>
-    <mainPanel><p>test</p></mainPanel>
-  </Tool>
-}
+// export default function Editor({ branchId, title }) {
+//   console.log("===Editor!",branchId,title);
+//   return <Tool>
+//     <mainPanel><p>test</p></mainPanel>
+//   </Tool>
+// }
 
 
-  export  function Editor2({ branchId, title }) {
+  export default  function Editor({ branchId, title }) {
   console.log("===Editor!",branchId,title);
   const viewerRef = useRef(null);
   const setEditorViewerScrollHeight = useSetRecoilState(editorViewerScrollHeightAtom);

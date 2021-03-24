@@ -15,6 +15,7 @@ import { useSupportPanelController } from "./Panels/SupportPanel";
 import { GlobalStyle } from "../../Tools/DoenetStyle";
 import GradebookAssignmentView from "./Overlays/GradebookAssignmentView";
 import GradebookAttemptView from "./Overlays/GradebookAttemptView";
+import { useEffect } from "react";
 // import doenetImage from "../../media/Doenet_Logo_cloud_only.png";
 
 export const layerStackAtom = atom({
@@ -147,21 +148,28 @@ export const useStackId = () => {
   return stackId;
 };
 
-function AtomLogger(){
+function AtomLogger(props){
   const myatom = useRecoilValue(layerStackAtom);
   console.log(">>>ToolRoot myatom",myatom)
+  useEffect(()=>{
+    console.log(">>>changed!")
+    if (props.callback){
+      props.callback((num)=>num+1)
+    }
+  },[myatom])
   return null;
 }
 
 export default function ToolRoot({ tool }) {
   const overlays = useRecoilValue(layerStackAtom);
+  const [workaround,setWorkaround] = useState(0);
 
   console.log(">>>ToolRoot overlays",overlays)
 
   return (
     <>
       <GlobalStyle />
-      <AtomLogger  />
+      <AtomLogger callback={setWorkaround} />
       {tool}
       {overlays.map((layer, idx) =>
         idx == overlays.length - 1 ? layer : null
