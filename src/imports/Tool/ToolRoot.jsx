@@ -162,10 +162,10 @@ export default function ToolRoot({ tool }) {
       <GlobalStyle />
       <AtomLogger />
       {tool}
-      {overlays.map((layer, idx) =>
+      {/* {overlays.map((layer, idx) =>
         idx == overlays.length - 1 ? layer : null
-      )}
-      <Toast />
+      )} */}
+      {/* <Toast /> */}
     </>
   );
 }
