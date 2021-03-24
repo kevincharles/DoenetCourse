@@ -153,13 +153,13 @@ export default function ToolRoot({ tool }) {
   console.log(">>>overlays",overlays)
   return (
     <>
-      <GlobalStyle />
+      {/* <GlobalStyle /> */}
 
       {tool}
-      {overlays.map((layer, idx) =>
+      {/* {overlays.map((layer, idx) =>
         idx == overlays.length - 1 ? layer : null
       )}
-      <Toast />
+      <Toast /> */}
     </>
   );
 }
