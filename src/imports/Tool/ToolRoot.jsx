@@ -157,16 +157,16 @@ export default function ToolRoot({ tool }) {
   const overlays = useRecoilValue(layerStackAtom);
 
   console.log(">>>ToolRoot overlays",overlays)
-  
+
   return (
     <>
-      {/* <GlobalStyle /> */}
-      <AtomLogger />
+      <GlobalStyle />
+      <AtomLogger  />
       {tool}
-      {/* {overlays.map((layer, idx) =>
+      {overlays.map((layer, idx) =>
         idx == overlays.length - 1 ? layer : null
-      )} */}
-      {/* <Toast /> */}
+      )}
+      <Toast />
     </>
   );
 }
