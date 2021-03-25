@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import sha1 from 'crypto-js/sha1';
+import Base64 from 'crypto-js/enc-base64';
 
 let rePlus = /\+/g;
 let reSlash = /\//g;
