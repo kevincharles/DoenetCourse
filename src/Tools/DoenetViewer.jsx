@@ -167,8 +167,7 @@ class DoenetViewer extends Component {
 
     let renderPromises = [];
     let rendererClassNames = [];
-    console.log('rendererTypesInDocument');
-    console.log(this.core.rendererTypesInDocument);
+    console.log('>>>rendererTypesInDocument',this.core.rendererTypesInDocument);
     for (let rendererClassName of this.core.rendererTypesInDocument) {
       rendererClassNames.push(rendererClassName);
       renderPromises.push(import(`../Renderers/${rendererClassName}.js`));
@@ -434,8 +433,11 @@ async function renderersloadComponent(promises, rendererClassNames) {
 
   var rendererClasses = {};
   for (let [index, promise] of promises.entries()) {
+    // console.log(">>>index",index)
+    console.log(">>>renderer name=",rendererClassNames[index])
     try {
       let module = await promise;
+      console.log(">>>module",module.default)
       rendererClasses[rendererClassNames[index]] = module.default;
     } catch (error) {
       console.log(error)

@@ -20,7 +20,7 @@ import {
   useRecoilStateLoadable, 
   useRecoilCallback
 } from "recoil";
-// import DoenetViewer from '../../../Tools/DoenetViewer'; //TODO!!!
+import DoenetViewer from '../../../Tools/DoenetViewer'; //TODO!!!
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/xml/xml';
@@ -41,7 +41,7 @@ import 'codemirror/theme/xq-light.css';
 // import 'codemirror/theme/neo.css';
 // import 'codemirror/theme/base16-light.css';
 
-import './editor.css';
+import './Editor.css';
 
 const fileByContentId = atomFamily({
   key:"fileByContentId",
@@ -541,23 +541,23 @@ function DoenetViewerPanel(props){
   let assignmentId = "myassignmentid";
   let solutionDisplayMode = "button";
 
-  return <p>{viewerDoenetML?.doenetML}</p>
-  // return <DoenetViewer
-  //     key={"doenetviewer" + viewerDoenetML?.updateNumber}
-  //     onCoreReady={onCoreReady}
-  //     doenetML={viewerDoenetML?.doenetML}
-  //     flags={{
-  //       showCorrectness: true,
-  //       readOnly: false,
-  //       solutionDisplayMode: solutionDisplayMode,
-  //       showFeedback: true,
-  //       showHints: true,
-  //     }}
-  //     attemptNumber={attemptNumber}
-  //     assignmentId={assignmentId}
-  //     ignoreDatabase={false}
-  //     requestedVariant={requestedVariant}
-  //     /> 
+  // return <p>{viewerDoenetML?.doenetML}</p>
+  return <DoenetViewer
+      key={"doenetviewer" + viewerDoenetML?.updateNumber}
+      onCoreReady={onCoreReady}
+      doenetML={viewerDoenetML?.doenetML}
+      flags={{
+        showCorrectness: true,
+        readOnly: false,
+        solutionDisplayMode: solutionDisplayMode,
+        showFeedback: true,
+        showHints: true,
+      }}
+      attemptNumber={attemptNumber}
+      assignmentId={assignmentId}
+      ignoreDatabase={false}
+      requestedVariant={requestedVariant}
+      /> 
 }
 
 const editorInitAtom = atom({

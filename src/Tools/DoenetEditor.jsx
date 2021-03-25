@@ -3,7 +3,7 @@ import axios from 'axios';
 import DoenetViewer from './DoenetViewer';
 import sha256 from 'crypto-js/sha256';
 import CryptoJS from 'crypto-js';
-import "./editor.css";
+import "./Editor.css";
 import allComponents from '../../docs/complete-docs.json';
 import ErrorBoundary from './ErrorBoundary';
 import ToolLayout from './ToolLayout/ToolLayout';
