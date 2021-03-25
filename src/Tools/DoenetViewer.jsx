@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import Core from '../Doenet/Core';
 import axios from 'axios';
-import sha256 from 'crypto-js/sha256';
-import CryptoJS from 'crypto-js';
+import crypto from 'crypto';
 
 // TODO: dynamic loading of renderers fails if we don't load HotTable
 // even though we don't use HotTable anywhere
@@ -49,7 +48,9 @@ class DoenetViewer extends Component {
       let doenetML = props.doenetML;
 
       // calculate contentId from doenetML
-      this.contentId = sha256(JSON.stringify(doenetML)).toString(CryptoJS.enc.Hex);
+      const hash = crypto.createHash('sha256');
+      hash.update(doenetML);
+      this.contentId = hash.digest('hex');
 
       this.haveDoenetML({ contentId: this.contentId, doenetML });
 
@@ -167,10 +168,12 @@ class DoenetViewer extends Component {
 
     let renderPromises = [];
     let rendererClassNames = [];
-    console.log('>>>rendererTypesInDocument',this.core.rendererTypesInDocument);
+    console.log('rendererTypesInDocument');
+    console.log(this.core.rendererTypesInDocument);
     for (let rendererClassName of this.core.rendererTypesInDocument) {
       rendererClassNames.push(rendererClassName);
-      renderPromises.push(import(`../Renderers/${rendererClassName}.js`));
+      // renderPromises.push(import(/* webpackMode: "lazy", webpackChunkName: "./renderers/[request]" */ `../Renderers/${rendererClassName}`));
+      renderPromises.push(import(/* webpackMode: "lazy", webpackChunkName: "renderers/[request]" */ `../Renderers/${rendererClassName}`));
     }
 
 
@@ -191,11 +194,7 @@ class DoenetViewer extends Component {
 
       this.forceUpdate();
     });
-    
-    //Let viewer know we are ready
-    if (this.props.onCoreReady){
-      this.props.onCoreReady(); 
-    }
+
   }
 
   localStateChanged({
@@ -433,11 +432,8 @@ async function renderersloadComponent(promises, rendererClassNames) {
 
   var rendererClasses = {};
   for (let [index, promise] of promises.entries()) {
-    // console.log(">>>index",index)
-    console.log(">>>renderer name=",rendererClassNames[index])
     try {
       let module = await promise;
-      console.log(">>>module",module.default)
       rendererClasses[rendererClassNames[index]] = module.default;
     } catch (error) {
       console.log(error)

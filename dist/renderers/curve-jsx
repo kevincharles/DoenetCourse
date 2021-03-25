@@ -1,0 +1,1069 @@
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[19,7],{
+
+/***/ 107:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ nanoid; });
+
+// UNUSED EXPORTS: customAlphabet, customRandom, urlAlphabet, random
+
+// CONCATENATED MODULE: ./node_modules/nanoid/url-alphabet/index.js
+// This alphabet uses `A-Za-z0-9_-` symbols. The genetic algorithm helped
+// optimize the gzip compression for this alphabet.
+let urlAlphabet =
+  'ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW'
+
+
+
+// CONCATENATED MODULE: ./node_modules/nanoid/index.browser.js
+// This file replaces `index.js` in bundlers like webpack or Rollup,
+// according to `browser` config in `package.json`.
+
+
+
+if (false) {}
+
+let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
+
+let customRandom = (alphabet, size, getRandom) => {
+  // First, a bitmask is necessary to generate the ID. The bitmask makes bytes
+  // values closer to the alphabet size. The bitmask calculates the closest
+  // `2^31 - 1` number, which exceeds the alphabet size.
+  // For example, the bitmask for the alphabet size 30 is 31 (00011111).
+  // `Math.clz32` is not used, because it is not available in browsers.
+  let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
+  // Though, the bitmask solution is not perfect since the bytes exceeding
+  // the alphabet size are refused. Therefore, to reliably generate the ID,
+  // the random bytes redundancy has to be satisfied.
+
+  // Note: every hardware random generator call is performance expensive,
+  // because the system call for entropy collection takes a lot of time.
+  // So, to avoid additional system calls, extra bytes are requested in advance.
+
+  // Next, a step determines how many random bytes to generate.
+  // The number of random bytes gets decided upon the ID size, mask,
+  // alphabet size, and magic number 1.6 (using 1.6 peaks at performance
+  // according to benchmarks).
+
+  // `-~f => Math.ceil(f)` if f is a float
+  // `-~i => i + 1` if i is an integer
+  let step = -~((1.6 * mask * size) / alphabet.length)
+
+  return () => {
+    let id = ''
+    while (true) {
+      let bytes = getRandom(step)
+      // A compact alternative for `for (var i = 0; i < step; i++)`.
+      let j = step
+      while (j--) {
+        // Adding `|| ''` refuses a random byte that exceeds the alphabet size.
+        id += alphabet[bytes[j] & mask] || ''
+        if (id.length === size) return id
+      }
+    }
+  }
+}
+
+let customAlphabet = (alphabet, size) => customRandom(alphabet, size, random)
+
+let nanoid = (size = 21) => {
+  let id = ''
+  let bytes = crypto.getRandomValues(new Uint8Array(size))
+
+  // A compact alternative for `for (var i = 0; i < step; i++)`.
+  while (size--) {
+    // It is incorrect to use bytes exceeding the alphabet size.
+    // The following mask reduces the random byte in the 0-255 value
+    // range to the 0-63 value range. Therefore, adding hacks, such
+    // as empty string fallback or magic numbers, is unneccessary because
+    // the bitmask trims bytes down to the alphabet size.
+    let byte = bytes[size] & 63
+    if (byte < 36) {
+      // `0-9a-z`
+      id += byte.toString(36)
+    } else if (byte < 62) {
+      // `A-Z`
+      id += (byte - 26).toString(36).toUpperCase()
+    } else if (byte < 63) {
+      id += '_'
+    } else {
+      id += '-'
+    }
+  }
+  return id
+}
+
+
+
+
+/***/ }),
+
+/***/ 759:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return DoenetRenderer; });
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7);
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(10);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(107);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_9__);
+
+
+
+
+
+
+
+
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5___default()(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+
+
+
+var DoenetRenderer = /*#__PURE__*/function (_Component) {
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default()(DoenetRenderer, _Component);
+
+  var _super = _createSuper(DoenetRenderer);
+
+  function DoenetRenderer(props) {
+    var _this;
+
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, DoenetRenderer);
+
+    _this = _super.call(this, props);
+    _this.addChildren = _this.addChildren.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.removeChildren = _this.removeChildren.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.swapChildren = _this.swapChildren.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.update = _this.update.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.childrenToCreate = props.componentInstructions.children;
+    _this.componentName = props.componentInstructions.componentName;
+    _this.actions = props.componentInstructions.actions; // This keeps the proxy in place so that state variables
+    // aren't calculated unless asked for
+    // Also means it will always have the new values when they are changed
+    // so we don't have to pass them in on update
+
+    _this.doenetSvData = props.componentInstructions.stateValues;
+    props.rendererUpdateMethods[_this.componentName] = {
+      update: _this.update,
+      addChildren: _this.addChildren,
+      removeChildren: _this.removeChildren,
+      swapChildren: _this.swapChildren
+    };
+
+    if (_this.constructor.initializeChildrenOnConstruction) {
+      _this.initializeChildren();
+    }
+
+    return _this;
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(DoenetRenderer, [{
+    key: "update",
+    value: function update() {
+      this.forceUpdate();
+    }
+  }, {
+    key: "addChildren",
+    value: function addChildren(instruction) {
+      var childInstructions = this.childrenToCreate[instruction.indexForParent];
+      var child = this.createChildFromInstructions(childInstructions);
+      this.children.splice(instruction.indexForParent, 0, child);
+      this.children = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(this.children); // needed for React to recognize it's different
+
+      this.forceUpdate();
+    }
+  }, {
+    key: "removeChildren",
+    value: function removeChildren(instruction) {
+      this.children.splice(instruction.firstIndexInParent, instruction.numberChildrenDeleted);
+      this.children = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(this.children); // needed for React to recognize it's different
+
+      var _iterator = _createForOfIteratorHelper(instruction.deletedComponentNames),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var componentName = _step.value;
+          delete this.props.rendererUpdateMethods[componentName];
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      this.forceUpdate();
+    }
+  }, {
+    key: "swapChildren",
+    value: function swapChildren(instruction) {
+      var _ref = [this.children[instruction.index2], this.children[instruction.index1]];
+      this.children[instruction.index1] = _ref[0];
+      this.children[instruction.index2] = _ref[1];
+      this.children = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(this.children); // needed for React to recognize it's different
+
+      this.forceUpdate();
+    }
+  }, {
+    key: "initializeChildren",
+    value: function initializeChildren() {
+      this.children = [];
+
+      var _iterator2 = _createForOfIteratorHelper(this.childrenToCreate),
+          _step2;
+
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var childInstructions = _step2.value;
+          var child = this.createChildFromInstructions(childInstructions);
+          this.children.push(child);
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+
+      return this.children;
+    }
+  }, {
+    key: "createChildFromInstructions",
+    value: function createChildFromInstructions(childInstructions) {
+      // add nanoid to key so that will have unique key if recreate
+      // renderer for a component with the same name as an old one
+      // TODO: is this the best way to do it?
+      var propsForChild = {
+        key: childInstructions.componentName + Object(nanoid__WEBPACK_IMPORTED_MODULE_8__[/* nanoid */ "a"])(10),
+        componentInstructions: childInstructions,
+        rendererClasses: this.props.rendererClasses,
+        rendererUpdateMethods: this.props.rendererUpdateMethods,
+        flags: this.props.flags
+      };
+
+      if (this.doenetPropsForChildren) {
+        Object.assign(propsForChild, this.doenetPropsForChildren);
+      }
+
+      var child = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_9___default.a.createElement(this.props.rendererClasses[childInstructions.rendererType], propsForChild);
+      return child;
+    }
+  }]);
+
+  return DoenetRenderer;
+}(react__WEBPACK_IMPORTED_MODULE_9__["Component"]);
+
+_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7___default()(DoenetRenderer, "initializeChildrenOnConstruction", true);
+
+
+
+/***/ }),
+
+/***/ 772:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FunctionCurve; });
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7);
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(10);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _DoenetRenderer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(759);
+
+
+
+
+
+
+
+
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5___default()(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+
+
+
+var FunctionCurve = /*#__PURE__*/function (_DoenetRenderer) {
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default()(FunctionCurve, _DoenetRenderer);
+
+  var _super = _createSuper(FunctionCurve);
+
+  function FunctionCurve(props) {
+    var _this;
+
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, FunctionCurve);
+
+    _this = _super.call(this, props);
+    _this.dragThroughPoint = _this.dragThroughPoint.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.dragControlPoint = _this.dragControlPoint.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.downThroughPoint = _this.downThroughPoint.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.upBoard = _this.upBoard.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.downOther = _this.downOther.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+
+    if (props.board) {
+      _this.createGraphicalObject();
+
+      _this.doenetPropsForChildren = {
+        board: _this.props.board
+      };
+
+      _this.initializeChildren();
+    }
+
+    return _this;
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(FunctionCurve, [{
+    key: "createGraphicalObject",
+    value: function createGraphicalObject() {
+      if (this.doenetSvData.curveType === "bezier" && this.doenetSvData.numericalThroughPoints.length < 2) {
+        return;
+      } //things to be passed to JSXGraph as attributes
+
+
+      var curveAttributes = {
+        name: this.doenetSvData.label,
+        visible: !this.doenetSvData.hidden,
+        withLabel: this.doenetSvData.showLabel && this.doenetSvData.label !== "",
+        fixed: true,
+        //this.doenetSvData.draggable !== true,
+        layer: 10 * this.doenetSvData.layer + 5,
+        strokeColor: this.doenetSvData.selectedStyle.markerColor,
+        highlightStrokeColor: this.doenetSvData.selectedStyle.markerColor,
+        strokeWidth: this.doenetSvData.selectedStyle.lineWidth,
+        dash: styleToDash(this.doenetSvData.selectedStyle.lineStyle)
+      };
+
+      if (!this.doenetSvData.draggable) {
+        curveAttributes.highlightStrokeWidth = this.doenetSvData.selectedStyle.lineWidth;
+      }
+
+      if (["parameterization", "bezier"].includes(this.doenetSvData.curveType)) {
+        this.curveJXG = this.props.board.create('curve', [this.doenetSvData.fs[0], this.doenetSvData.fs[1], this.doenetSvData.parmin, this.doenetSvData.parmax], curveAttributes);
+      } else {
+        if (this.doenetSvData.flipFunction) {
+          this.originalCurveJXG = this.props.board.create('functiongraph', [this.doenetSvData.fs[0]], {
+            visible: false
+          });
+          this.reflectLine = this.props.board.create('line', [0, 1, -1], {
+            visible: false
+          });
+          this.curveJXG = this.props.board.create('reflection', [this.originalCurveJXG, this.reflectLine], curveAttributes);
+        } else {
+          this.curveJXG = this.props.board.create('functiongraph', [this.doenetSvData.fs[0]], curveAttributes);
+        }
+
+        this.previousFlipFunction = this.doenetSvData.flipFunction;
+      }
+
+      this.previousCurveType = this.doenetSvData.curveType;
+
+      if (this.doenetSvData.curveType === "bezier") {
+        this.props.board.on('up', this.upBoard);
+        this.curveJXG.on('down', this.downOther);
+        this.segmentAttributes = {
+          visible: false,
+          withLabel: false,
+          fixed: true,
+          strokeColor: 'lightgray',
+          highlightStrokeColor: 'lightgray',
+          layer: 10 * this.doenetSvData.layer + 7,
+          strokeWidth: 1,
+          highlightStrokeWidth: 1
+        };
+        this.throughPointAttributes = {
+          visible: !this.doenetSvData.hidden,
+          withLabel: false,
+          fixed: false,
+          fillColor: 'none',
+          strokeColor: 'none',
+          highlightFillColor: 'lightgray',
+          highlightStrokeColor: 'lightgray',
+          strokeWidth: 1,
+          highlightStrokeWidth: 1,
+          layer: 10 * this.doenetSvData.layer + 7,
+          size: 3
+        };
+        this.throughPointAlwaysVisible = {
+          fillcolor: 'lightgray',
+          strokecolor: 'lightgray'
+        };
+        this.throughPointHoverVisible = {
+          fillcolor: 'none',
+          strokecolor: 'none'
+        };
+        this.controlPointAttributes = {
+          visible: false,
+          withLabel: false,
+          fixed: false,
+          fillColor: 'gray',
+          strokeColor: 'gray',
+          highlightFillColor: 'gray',
+          highlightStrokeColor: 'gray',
+          strokeWidth: 1,
+          highlightStrokeWidth: 1,
+          layer: 10 * this.doenetSvData.layer + 8,
+          size: 2
+        };
+
+        if (!this.doenetSvData.draggable) {
+          return this.curveJXG;
+        }
+
+        this.createControls();
+        this.props.board.updateRenderer();
+        this.previousNumberOfPoints = this.doenetSvData.numericalThroughPoints.length;
+        this.previousVectorControlDirections = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(this.doenetSvData.vectorControlDirections);
+      }
+
+      return this.curveJXG;
+    }
+  }, {
+    key: "createControls",
+    value: function createControls() {
+      var _this2 = this;
+
+      this.throughPointsJXG = [];
+      this.controlPointsJXG = [];
+      this.segmentsJXG = [];
+
+      var _loop = function _loop(i) {
+        // middle through points have two controls
+        var tp = _this2.props.board.create('point', _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(_this2.doenetSvData.numericalThroughPoints[i]), _this2.throughPointAttributes);
+
+        _this2.throughPointsJXG.push(tp);
+
+        var cp1 = _this2.props.board.create('point', _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(_this2.doenetSvData.numericalControlPoints[i][0]), _this2.controlPointAttributes);
+
+        var cp2 = _this2.props.board.create('point', _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(_this2.doenetSvData.numericalControlPoints[i][1]), _this2.controlPointAttributes);
+
+        _this2.controlPointsJXG.push([cp1, cp2]);
+
+        var seg1 = _this2.props.board.create('segment', [tp, cp1], _this2.segmentAttributes);
+
+        var seg2 = _this2.props.board.create('segment', [tp, cp2], _this2.segmentAttributes);
+
+        _this2.segmentsJXG.push([seg1, seg2]);
+
+        tp.on('drag', function (e) {
+          return _this2.dragThroughPoint(i, true, e);
+        });
+        tp.on('down', function (e) {
+          return _this2.downThroughPoint(i, e);
+        });
+        tp.on('up', function (e) {
+          return _this2.dragThroughPoint(i, false, e);
+        });
+        cp1.on('drag', function (e) {
+          return _this2.dragControlPoint(i, 0, true, e);
+        });
+        cp2.on('drag', function (e) {
+          return _this2.dragControlPoint(i, 1, true, e);
+        });
+        cp1.on('down', _this2.downOther);
+        cp2.on('down', _this2.downOther);
+        seg1.on('down', _this2.downOther);
+        seg1.on('down', _this2.downOther);
+        cp1.on('up', function (e) {
+          return _this2.dragControlPoint(i, 0, false, e);
+        });
+        cp2.on('up', function (e) {
+          return _this2.dragControlPoint(i, 1, false, e);
+        });
+      };
+
+      for (var i = 0; i < this.doenetSvData.numericalThroughPoints.length; i++) {
+        _loop(i);
+      }
+
+      this.vectorControlsVisible = [];
+    }
+  }, {
+    key: "deleteControls",
+    value: function deleteControls() {
+      var _this3 = this;
+
+      if (this.segmentsJXG) {
+        this.segmentsJXG.forEach(function (x) {
+          return x.forEach(function (y) {
+            if (y) {
+              _this3.props.board.removeObject(y);
+            }
+          });
+        });
+        delete this.segmentsJXG;
+        this.controlPointsJXG.forEach(function (x) {
+          return x.forEach(function (y) {
+            if (y) {
+              _this3.props.board.removeObject(y);
+            }
+          });
+        });
+        delete this.controlPointsJXG;
+        this.throughPointsJXG.forEach(function (x) {
+          return _this3.props.board.removeObject(x);
+        });
+        delete this.throughPointsJXG;
+      }
+    }
+  }, {
+    key: "deleteGraphicalObject",
+    value: function deleteGraphicalObject() {
+      this.props.board.removeObject(this.curveJXG);
+      delete this.curveJXG;
+
+      if (this.reflectLine !== undefined) {
+        this.props.board.removeObject(this.reflectLine);
+        delete this.reflectLine;
+        this.props.board.removeObject(this.originalCurveJXG);
+        delete this.originalCurveJXG;
+      }
+
+      this.deleteControls();
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      if (this.curveJXG) {
+        this.deleteGraphicalObject();
+      }
+    }
+  }, {
+    key: "dragThroughPoint",
+    value: function dragThroughPoint(i, _transient) {
+      if (_transient) {
+        this.draggedThroughPoint = i;
+      } else if (this.draggedThroughPoint !== i) {
+        return;
+      }
+
+      var tpcoords = [this.throughPointsJXG[i].X(), this.throughPointsJXG[i].Y()];
+      this.actions.moveThroughPoint({
+        throughPoint: tpcoords,
+        throughPointInd: i,
+        "transient": _transient
+      });
+    }
+  }, {
+    key: "dragControlPoint",
+    value: function dragControlPoint(point, i, _transient2) {
+      // console.log(`drag control point ${point}, ${i}`)
+      if (_transient2) {
+        this.draggedControlPoint = point + "_" + i;
+      } else if (this.draggedControlPoint !== point + "_" + i) {
+        return;
+      }
+
+      this.actions.moveControlVector({
+        controlVector: [this.controlPointsJXG[point][i].X() - this.throughPointsJXG[point].X(), this.controlPointsJXG[point][i].Y() - this.throughPointsJXG[point].Y()],
+        controlVectorInds: [point, i],
+        "transient": _transient2
+      });
+    }
+  }, {
+    key: "makeThroughPointsAlwaysVisible",
+    value: function makeThroughPointsAlwaysVisible() {
+      var _iterator = _createForOfIteratorHelper(this.throughPointsJXG),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var point = _step.value;
+
+          for (var attribute in this.throughPointAlwaysVisible) {
+            point.visProp[attribute] = this.throughPointAlwaysVisible[attribute];
+          }
+
+          point.needsUpdate = true;
+          point.update();
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+    }
+  }, {
+    key: "makeThroughPointsHoverVisible",
+    value: function makeThroughPointsHoverVisible() {
+      var _iterator2 = _createForOfIteratorHelper(this.throughPointsJXG),
+          _step2;
+
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var point = _step2.value;
+
+          for (var attribute in this.throughPointHoverVisible) {
+            point.visProp[attribute] = this.throughPointHoverVisible[attribute];
+          }
+
+          point.needsUpdate = true;
+          point.update();
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+    }
+  }, {
+    key: "hideAllControls",
+    value: function hideAllControls() {
+      var _iterator3 = _createForOfIteratorHelper(this.controlPointsJXG),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var controlPair = _step3.value;
+
+          var _iterator5 = _createForOfIteratorHelper(controlPair),
+              _step5;
+
+          try {
+            for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+              var cp = _step5.value;
+
+              if (cp) {
+                cp.visProp.visible = false;
+                cp.needsUpdate = true;
+                cp.update();
+              }
+            }
+          } catch (err) {
+            _iterator5.e(err);
+          } finally {
+            _iterator5.f();
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+
+      var _iterator4 = _createForOfIteratorHelper(this.segmentsJXG),
+          _step4;
+
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var segmentPair = _step4.value;
+
+          var _iterator6 = _createForOfIteratorHelper(segmentPair),
+              _step6;
+
+          try {
+            for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+              var seg = _step6.value;
+
+              if (seg) {
+                seg.visProp.visible = false;
+                seg.needsUpdate = true;
+                seg.update();
+              }
+            }
+          } catch (err) {
+            _iterator6.e(err);
+          } finally {
+            _iterator6.f();
+          }
+        }
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+
+      this.vectorControlsVisible = [];
+    }
+  }, {
+    key: "upBoard",
+    value: function upBoard() {
+      if (!this.doenetSvData.draggable) {
+        return;
+      }
+
+      if (this.hitObject !== true) {
+        this.makeThroughPointsHoverVisible();
+        this.hideAllControls();
+        this.props.board.updateRenderer();
+      }
+
+      this.hitObject = false;
+    }
+  }, {
+    key: "downThroughPoint",
+    value: function downThroughPoint(i, e) {
+      if (!this.doenetSvData.draggable) {
+        return;
+      }
+
+      this.draggedThroughPoint = null;
+      this.draggedControlPoint = null; // console.log(`down through point: ${i}`)
+
+      this.hitObject = true;
+      this.makeThroughPointsAlwaysVisible();
+      this.makeVectorControlVisible(i);
+      this.props.board.updateRenderer();
+    }
+  }, {
+    key: "makeVectorControlVisible",
+    value: function makeVectorControlVisible(i) {
+      if (this.controlPointsJXG[i][0]) {
+        var isVisible = (i > 0 || this.doenetSvData.extrapolateBackward) && ["symmetric", "both", "previous"].includes(this.doenetSvData.vectorControlDirections[i]);
+        this.controlPointsJXG[i][0].visProp.visible = isVisible;
+        this.controlPointsJXG[i][0].visPropCalc.visible = isVisible;
+        this.controlPointsJXG[i][0].needsUpdate = true;
+        this.controlPointsJXG[i][0].update();
+        this.segmentsJXG[i][0].visProp.visible = isVisible;
+        this.segmentsJXG[i][0].visPropCalc.visible = isVisible;
+        this.segmentsJXG[i][0].needsUpdate = true;
+        this.segmentsJXG[i][0].update();
+      }
+
+      if (this.controlPointsJXG[i][1]) {
+        var _isVisible = (i < this.throughPointsJXG.length - 1 || this.doenetSvData.extrapolateForward) && ["symmetric", "both", "next"].includes(this.doenetSvData.vectorControlDirections[i]);
+
+        this.controlPointsJXG[i][1].visProp.visible = _isVisible;
+        this.controlPointsJXG[i][1].visPropCalc.visible = _isVisible;
+        this.controlPointsJXG[i][1].needsUpdate = true;
+        this.controlPointsJXG[i][1].update();
+        this.segmentsJXG[i][1].visProp.visible = _isVisible;
+        this.segmentsJXG[i][1].visPropCalc.visible = _isVisible;
+        this.segmentsJXG[i][1].needsUpdate = true;
+        this.segmentsJXG[i][1].update();
+      }
+
+      this.vectorControlsVisible[i] = true;
+    }
+  }, {
+    key: "downOther",
+    value: function downOther() {
+      if (!this.doenetSvData.draggable) {
+        return;
+      }
+
+      this.draggedThroughPoint = null;
+      this.draggedControlPoint = null;
+      this.hitObject = true;
+      this.makeThroughPointsAlwaysVisible();
+      this.props.board.updateRenderer();
+    }
+  }, {
+    key: "update",
+    value: function update(_ref) {
+      var _this4 = this;
+
+      var sourceOfUpdate = _ref.sourceOfUpdate;
+
+      if (!this.props.board) {
+        this.forceUpdate();
+        return;
+      }
+
+      if (this.curveJXG === undefined) {
+        return this.createGraphicalObject();
+      }
+
+      if (this.doenetSvData.curveType === "bezier" && this.doenetSvData.numericalThroughPoints.length < 2) {
+        this.deleteGraphicalObject();
+        return;
+      }
+
+      if (this.previousCurveType !== this.doenetSvData.curveType || this.previousCurveType === "function" && this.previousFlipFunction !== this.doenetSvData.flipFunction) {
+        // redraw entire curve curve type changed or if flip of function changed
+        this.deleteGraphicalObject();
+        var result = this.createGraphicalObject();
+
+        if (this.props.board.updateQuality === this.props.board.BOARD_QUALITY_LOW) {
+          if (this.doenetSvData.curveType === "function" && this.doenetSvData.flipFunction) {
+            this.props.board.itemsRenderedLowQuality[this._key] = this.originalCurveJXG;
+          } else {
+            this.props.board.itemsRenderedLowQuality[this._key] = this.curveJXG;
+          }
+        }
+
+        return result;
+      }
+
+      if (this.props.board.updateQuality === this.props.board.BOARD_QUALITY_LOW) {
+        this.props.board.itemsRenderedLowQuality[this._key] = this.curveJXG;
+      }
+
+      var visible = !this.doenetSvData.hidden;
+      this.curveJXG.name = this.doenetSvData.label;
+      this.curveJXG.visProp["visible"] = visible;
+      this.curveJXG.visPropCalc["visible"] = visible;
+
+      if (["parameterization", "bezier"].includes(this.doenetSvData.curveType)) {
+        this.curveJXG.X = this.doenetSvData.fs[0];
+        this.curveJXG.Y = this.doenetSvData.fs[1];
+
+        this.curveJXG.minX = function () {
+          return _this4.doenetSvData.parmin;
+        };
+
+        this.curveJXG.maxX = function () {
+          return _this4.doenetSvData.parmax;
+        };
+      } else {
+        if (this.doenetSvData.flipFunction) {
+          this.originalCurveJXG.Y = this.doenetSvData.fs[0];
+          this.originalCurveJXG.needsUpdate = true;
+          this.originalCurveJXG.updateCurve();
+
+          if (this.props.board.updateQuality === this.props.board.BOARD_QUALITY_LOW) {
+            this.props.board.itemsRenderedLowQuality[this._key] = this.originalCurveJXG;
+          }
+        } else {
+          this.curveJXG.Y = this.doenetSvData.fs[0];
+        }
+      }
+
+      this.curveJXG.needsUpdate = true;
+      this.curveJXG.updateCurve();
+
+      if (this.curveJXG.hasLabel) {
+        this.curveJXG.label.needsUpdate = true;
+        this.curveJXG.label.visPropCalc.visible = this.doenetSvData.showLabel && this.doenetSvData.label !== "";
+        this.curveJXG.label.update();
+      }
+
+      if (this.doenetSvData.curveType !== "bezier") {
+        this.props.board.updateRenderer();
+        return;
+      }
+
+      if (!this.doenetSvData.draggable) {
+        if (this.segmentsJXG) {
+          this.deleteControls();
+        }
+
+        this.props.board.updateRenderer();
+        return;
+      }
+
+      if (!this.segmentsJXG) {
+        this.createControls();
+        this.previousNumberOfPoints = this.doenetSvData.numericalThroughPoints.length;
+        this.previousVectorControlDirections = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(this.doenetSvData.vectorControlDirections);
+        this.props.board.updateRenderer();
+        return;
+      } // add or delete segments and points if number changed
+
+
+      if (this.doenetSvData.numericalThroughPoints.length > this.previousNumberOfPoints) {
+        var _loop2 = function _loop2(i) {
+          // add point and its controls
+          var tp = _this4.props.board.create('point', _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(_this4.doenetSvData.numericalThroughPoints[i]), _this4.throughPointAttributes);
+
+          _this4.throughPointsJXG.push(tp);
+
+          var cp1 = _this4.props.board.create('point', _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(_this4.doenetSvData.numericalControlPoints[i][0]), _this4.controlPointAttributes);
+
+          var cp2 = _this4.props.board.create('point', _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(_this4.doenetSvData.numericalControlPoints[i][1]), _this4.controlPointAttributes);
+
+          _this4.controlPointsJXG.push([cp1, cp2]);
+
+          var seg1 = _this4.props.board.create('segment', [tp, cp1], _this4.segmentAttributes);
+
+          var seg2 = _this4.props.board.create('segment', [tp, cp2], _this4.segmentAttributes);
+
+          _this4.segmentsJXG.push([seg1, seg2]);
+
+          cp1.visProp.visible = false;
+          seg1.visProp.visible = false;
+          cp2.visProp.visible = false;
+          seg2.visProp.visible = false;
+          tp.on('drag', function (e) {
+            return _this4.dragThroughpoint(i, true, e);
+          });
+          tp.on('down', function (e) {
+            return _this4.downThroughpoint(i, e);
+          });
+          tp.on('up', function (e) {
+            return _this4.dragThroughpoint(i, false, e);
+          });
+          cp1.on('drag', function (e) {
+            return _this4.dragControlPoint(i, 0, true, e);
+          });
+          cp1.on('down', _this4.downOther);
+          cp1.on('up', function (e) {
+            return _this4.dragControlPoint(i, 0, false, e);
+          });
+          cp2.on('drag', function (e) {
+            return _this4.dragControlPoint(i, 1, true, e);
+          });
+          cp2.on('down', _this4.downOther);
+          cp2.on('up', function (e) {
+            return _this4.dragControlPoint(i, 1, false, e);
+          });
+          seg1.on('down', _this4.downOther);
+          seg2.on('down', _this4.downOther);
+        };
+
+        for (var i = this.previousNumberOfPoints; i < this.doenetSvData.numericalThroughPoints.length; i++) {
+          _loop2(i);
+        }
+      } else if (this.doenetSvData.numericalThroughPoints.length < this.previousNumberOfPoints) {
+        for (var _i = this.previousNumberOfPoints - 1; _i >= this.doenetSvData.numericalThroughPoints.length; _i--) {
+          this.props.board.removeObject(this.segmentsJXG[_i][0]);
+          this.props.board.removeObject(this.segmentsJXG[_i][1]);
+          this.segmentsJXG.pop();
+          this.props.board.removeObject(this.controlPointsJXG[_i][0]);
+          this.props.board.removeObject(this.controlPointsJXG[_i][1]);
+          this.controlPointsJXG.pop();
+          this.props.board.removeObject(this.throughPointsJXG.pop());
+        }
+      } // move old points
+
+
+      var nOld = Math.min(this.doenetSvData.numericalThroughPoints.length, this.previousNumberOfPoints);
+
+      for (var _i2 = 0; _i2 < nOld; _i2++) {
+        if (this.previousVectorControlDirections[_i2] !== this.doenetSvData.vectorControlDirections[_i2] && this.vectorControlsVisible[_i2]) {
+          // refresh visibility
+          this.makeVectorControlVisible(_i2);
+        }
+
+        this.throughPointsJXG[_i2].coords.setCoordinates(JXG.COORDS_BY_USER, _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(this.doenetSvData.numericalThroughPoints[_i2]));
+
+        this.throughPointsJXG[_i2].needsUpdate = true;
+
+        this.throughPointsJXG[_i2].update();
+
+        this.controlPointsJXG[_i2][0].coords.setCoordinates(JXG.COORDS_BY_USER, _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(this.doenetSvData.numericalControlPoints[_i2][0]));
+
+        this.controlPointsJXG[_i2][0].needsUpdate = true;
+
+        this.controlPointsJXG[_i2][0].update();
+
+        this.segmentsJXG[_i2][0].needsUpdate = true;
+
+        this.segmentsJXG[_i2][0].update();
+
+        this.controlPointsJXG[_i2][1].coords.setCoordinates(JXG.COORDS_BY_USER, _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(this.doenetSvData.numericalControlPoints[_i2][1]));
+
+        this.controlPointsJXG[_i2][1].needsUpdate = true;
+
+        this.controlPointsJXG[_i2][1].update();
+
+        this.segmentsJXG[_i2][1].needsUpdate = true;
+
+        this.segmentsJXG[_i2][1].update();
+      }
+
+      for (var _i3 = 0; _i3 < this.doenetSvData.numericalThroughPoints.length; _i3++) {
+        this.throughPointsJXG[_i3].visProp["visible"] = !this.doenetSvData.hidden;
+        this.throughPointsJXG[_i3].visPropCalc["visible"] = !this.doenetSvData.hidden;
+      }
+
+      if (this.componentName in sourceOfUpdate.sourceInformation) {
+        var ind = sourceOfUpdate.sourceInformation.throughPointMoved;
+
+        if (ind !== undefined) {
+          this.props.board.updateInfobox(this.throughPointsJXG[ind]);
+        } else {
+          ind = sourceOfUpdate.sourceInformation.controlVectorMoved;
+
+          if (ind !== undefined) {
+            this.props.board.updateInfobox(this.controlPointsJXG[ind[0]][ind[1]]);
+          }
+        }
+      }
+
+      this.previousNumberOfPoints = this.doenetSvData.numericalThroughPoints.length;
+      this.previousVectorControlDirections = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(this.doenetSvData.vectorControlDirections);
+      this.props.board.updateRenderer();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (this.props.board) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_8___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("a", {
+          name: this.componentName
+        }));
+      }
+
+      if (this.doenetSvData.hidden) {
+        return null;
+      } // don't think we want to return anything if not in board
+
+
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_8___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("a", {
+        name: this.componentName
+      }));
+    }
+  }]);
+
+  return FunctionCurve;
+}(_DoenetRenderer__WEBPACK_IMPORTED_MODULE_9__["default"]);
+
+_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7___default()(FunctionCurve, "initializeChildrenOnConstruction", false);
+
+
+
+function styleToDash(style) {
+  if (style === "solid") {
+    return 0;
+  } else if (style === "dashed") {
+    return 2;
+  } else if (style === "dotted") {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+/***/ })
+
+}]);
