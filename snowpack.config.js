@@ -4,17 +4,6 @@ proxy.on('proxyReq', function(proxyReq, req, res, options) {
   proxyReq.setHeader('Host', 'localhost');
 });
 
-function fixObjectAssign () {
-  return {
-      name: 'fix-object-assign',
-      transform ( code, id ) {
-          if (id.indexOf('universal-cookie/') > - 1) {
-              return code.replace("require('object-assign')", 'Object.assign');
-          }
-          return null;
-      }
-  };
-}
 
 /** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
@@ -63,7 +52,6 @@ module.exports = {
     polyfillNode: true,
     rollup: {
       plugins: [
-        fixObjectAssign(),
         require('rollup-plugin-re')({
           patterns: [
             {
