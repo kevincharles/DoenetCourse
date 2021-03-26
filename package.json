@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "start": "cd doenet_docker && docker-compose up -d && cd ..  && snowpack dev --polyfill-node",
+    "start": "cd doenet_docker && docker-compose up -d && cd ..  && snowpack dev",
     "healthcheck": "npx wait-on http://localhost:80 && docker exec doenet_docker_mysql_1 /bin/sh wait_on_mysql.sh",
     "docker:build": "cd doenet_docker && docker-compose build",
     "docker:lamp": "cd doenet_docker_lamp_only && docker-compose up",
     "docker:webpack": "cd doenet_docker_webpack_only && docker-compose up",
-    "build": "webpack --mode production --config webpack.deployment.config.js",
+    "build": "snowpack build",
     "lint": "prettier-eslint --write true \"$(pwd)/src/**/*.js\" && prettier-eslint --write true \"$(pwd)/cypress/**/*.js\"",
     "test": "cypress open",
     "test:all": "cypress run -b 'chrome' --config video=false",
