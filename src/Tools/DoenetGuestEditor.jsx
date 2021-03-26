@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 import DoenetViewer from './DoenetViewer';
-import "./editor.css";
+import "./Editor.css";
 import allComponents from '../../docs/complete-docs.json';
 import ErrorBoundary from './ErrorBoundary';
 import ToolLayout from "./ToolLayout/ToolLayout";
