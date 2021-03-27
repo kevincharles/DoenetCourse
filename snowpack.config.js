@@ -15,6 +15,10 @@ module.exports = {
     ["snowpack-plugin-raw-file-loader", {
       exts: [".doenet",".txt"], // Add file extensions saying what files should be loaded as strings in your snowpack application. Default: '.txt'
     }],
+    ["snowpack-plugin-replace", {
+      from: /require(\((["'])(?:\\\2|[^\n])*?\2\))/g,
+      to:"import$1"
+    }]
   ],
   //any and all requests to apache must have a section here.
   routes: [
@@ -48,18 +52,7 @@ module.exports = {
     // "bundle": true,
   },
   packageOptions: {
-    rollup: {
-      plugins: [
-        require('rollup-plugin-re')({
-          patterns: [
-            {
-              test: /require(\((["'])(?:\\\2|[^\n])*?\2\))/g,
-              replace: 'import$1'
-            }
-          ]
-        })
-      ]
-    },
+    
   },
   devOptions: {
     port: 8080
