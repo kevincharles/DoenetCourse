@@ -1,6 +1,6 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[37,1],{
 
-/***/ 497:
+/***/ 500:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22,7 +22,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(49);
+/* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(50);
 /* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(nanoid__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(0);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_9__);
@@ -186,7 +186,7 @@ _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7___default()(Doe
 
 /***/ }),
 
-/***/ 534:
+/***/ 537:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -204,8 +204,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(0);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _DoenetRenderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(497);
-/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(23);
+/* harmony import */ var _DoenetRenderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(500);
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(24);
 /* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(18);
 
 
@@ -266,64 +266,46 @@ var Section = /*#__PURE__*/function (_DoenetRenderer) {
             icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_8__[/* faCaretRight */ "h"]
           }), " ", title, " (click to open)");
         }
-      } // if (this.doenetSvData.level === 0) {
-      //   heading = <h1 id={id}>{title}</h1>;
-      // } else if (this.doenetSvData.level === 1) {
-      //   heading = <h2 id={id}>{title}</h2>;
-      // } else if (this.doenetSvData.level === 2) {
-      //   heading = <h3 id={id}>{title}</h3>;
-      // } else if (this.doenetSvData.level === 3) {
-      //   heading = <h4 id={id}>{title}</h4>;
-      // } else if (this.doenetSvData.level === 4) {
-      //   heading = <h5 id={id}>{title}</h5>;
-      // } else if (this.doenetSvData.level === 5) {
-      //   heading = <h6 id={id}>{title}</h6>;
-      // }
-
+      }
 
       if (this.doenetSvData.level === 0) {
-        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
-          style: {
-            fontSize: "30px"
-          },
+        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("h1", {
           id: id
         }, title);
       } else if (this.doenetSvData.level === 1) {
-        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
-          style: {
-            fontSize: "26px"
-          },
+        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("h2", {
           id: id
         }, title);
       } else if (this.doenetSvData.level === 2) {
-        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
-          style: {
-            fontSize: "22px"
-          },
+        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("h3", {
           id: id
         }, title);
       } else if (this.doenetSvData.level === 3) {
-        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
-          style: {
-            fontSize: "18px"
-          },
+        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("h4", {
           id: id
         }, title);
       } else if (this.doenetSvData.level === 4) {
-        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
-          style: {
-            fontSize: "14px"
-          },
+        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("h5", {
           id: id
         }, title);
       } else if (this.doenetSvData.level === 5) {
-        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
-          style: {
-            fontSize: "12px"
-          },
+        heading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("h6", {
           id: id
         }, title);
-      }
+      } //  if (this.doenetSvData.level === 0) {
+      //   heading = <span style={{fontSize:"30px"}} id={id}>{title}</span>;
+      // } else if (this.doenetSvData.level === 1) {
+      //   heading = <span style={{fontSize:"26px"}} id={id}>{title}</span>;
+      // } else if (this.doenetSvData.level === 2) {
+      //   heading = <span style={{fontSize:"22px"}} id={id}>{title}</span>;
+      // } else if (this.doenetSvData.level === 3) {
+      //   heading = <span style={{fontSize:"18px"}} id={id}>{title}</span>;
+      // } else if (this.doenetSvData.level === 4) {
+      //   heading = <span style={{fontSize:"14px"}} id={id}>{title}</span>;
+      // } else if (this.doenetSvData.level === 5) {
+      //   heading = <span style={{fontSize:"12px"}} id={id}>{title}</span>;
+      // }
+
 
       var checkworkComponent = null;
 

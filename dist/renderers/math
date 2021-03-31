@@ -1,6 +1,6 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[24,1],{
 
-/***/ 497:
+/***/ 500:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22,7 +22,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(49);
+/* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(50);
 /* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(nanoid__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(0);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_9__);
@@ -186,7 +186,7 @@ _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_7___default()(Doe
 
 /***/ }),
 
-/***/ 521:
+/***/ 524:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -204,7 +204,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(0);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _DoenetRenderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(497);
+/* harmony import */ var _DoenetRenderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(500);
 
 
 
@@ -265,12 +265,9 @@ var MathRenderer = /*#__PURE__*/function (_DoenetRenderer) {
         beginDelim = "\\[";
         endDelim = "\\]";
       } else if (this.doenetSvData.renderMode === "numbered") {
-        beginDelim = "\\begin{gather}";
+        beginDelim = "\\begin{gather}\\tag{".concat(this.doenetSvData.equationTag, "}");
         endDelim = "\\end{gather}";
       } else if (this.doenetSvData.renderMode === "align") {
-        beginDelim = "\\begin{align*}";
-        endDelim = "\\end{align*}";
-      } else if (this.doenetSvData.renderMode === "alignnumbered") {
         beginDelim = "\\begin{align}";
         endDelim = "\\end{align}";
       } else {
@@ -287,32 +284,38 @@ var MathRenderer = /*#__PURE__*/function (_DoenetRenderer) {
 
       var latexOrInputChildren = this.doenetSvData.latexWithInputChildren.map(function (x) {
         return typeof x === "number" ? _this.children[x] : beginDelim + x + endDelim;
-      }); // TODO: BADBADBAD
+      });
+      var anchors = [/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement('a', {
+        name: this.componentName,
+        key: this.componentName
+      })];
+
+      if (this.doenetSvData.mrowChildNames) {
+        anchors.push(this.doenetSvData.mrowChildNames.map(function (x) {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement('a', {
+            name: x,
+            key: x
+          });
+        }));
+      } // TODO: BADBADBAD
       // Don't understand why MathJax isn't updating when using {latexOrInputChildren}
       // so hard coded the only two cases using so far: with 1 or 2 entries
 
+
       if (latexOrInputChildren.length === 0) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_5___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("a", {
-          name: this.componentName
-        }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_5___default.a.Fragment, null, anchors, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
           id: this.componentName
         }));
       } else if (latexOrInputChildren.length === 1) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_5___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("a", {
-          name: this.componentName
-        }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_5___default.a.Fragment, null, anchors, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
           id: this.componentName
         }, latexOrInputChildren[0]));
       } else if (latexOrInputChildren.length === 2) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_5___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("a", {
-          name: this.componentName
-        }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_5___default.a.Fragment, null, anchors, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
           id: this.componentName
         }, latexOrInputChildren[0], latexOrInputChildren[1]));
       } else {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_5___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("a", {
-          name: this.componentName
-        }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_5___default.a.Fragment, null, anchors, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("span", {
           id: this.componentName
         }, latexOrInputChildren[0]));
       }
