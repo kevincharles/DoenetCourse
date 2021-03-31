@@ -7,10 +7,17 @@ import { faCheck, faLevelDownAlt, faTimes, faCloud, faPercentage } from '@fortaw
 import styled from 'styled-components';
 // import MathJax from 'react-mathjax2';
 //snowpack is not a fan of destructing here for some reason?
-import mathquill from 'react-mathquill';
+// import mathquill from 'react-mathquill';
 import { latexToAst, substituteUnicodeInLatexString } from '../Doenet/utils/math';
-mathquill.addStyles(); //Styling for react-mathquill input field
-let EditableMathField = mathquill.EditableMathField;
+// mathquill.addStyles(); //Styling for react-mathquill input field
+
+// import styled from 'styled-components';
+// import MathJax from 'react-mathjax2';
+import { addStyles, EditableMathField } from "react-mathquill";
+
+// let EditableMathField = mathquill.EditableMathField;
+
+addStyles(); //Styling for react-mathquill input field
 
 // const Prev = styled.div`
 //   font-size: 23px;
