@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import logo from '../../Media/Doenet_Logo_Frontpage.png';
+import logo from '../../media/Doenet_Logo_Frontpage.png';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 

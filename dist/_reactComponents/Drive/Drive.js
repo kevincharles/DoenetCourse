@@ -467,18 +467,10 @@ function DriveRouted(props) {
   if (props.hideUnpublished) {
     hideUnpublished = props.hideUnpublished;
   }
-  const driveInfo = useRecoilValueLoadable(loadDriveInfoQuery(props.driveId));
   const setDriveInstanceId = useSetRecoilState(driveInstanceIdDictionary(props.driveId));
   let driveInstanceId = useRef("");
   const path = Object.fromEntries(new URLSearchParams(props.route.location.search))?.path;
   useUpdateBreadcrumb({driveId: props.driveId, driveLabel: props.driveObj.label, path});
-  if (driveInfo.state === "loading") {
-    return null;
-  }
-  if (driveInfo.state === "hasError") {
-    console.error(driveInfo.contents);
-    return null;
-  }
   if (driveInstanceId.current === "") {
     driveInstanceId.current = nanoid();
     setDriveInstanceId((old) => {
@@ -507,6 +499,10 @@ function DriveRouted(props) {
       setNumColumns
     });
   }
+  let viewAccess = props?.viewAccess;
+  if (!viewAccess) {
+    viewAccess = "all";
+  }
   return /* @__PURE__ */ React.createElement(React.Fragment, null, heading, /* @__PURE__ */ React.createElement(Folder, {
     driveId: props.driveId,
     folderId: rootFolderId,
@@ -522,6 +518,7 @@ function DriveRouted(props) {
     foldersOnly: props.foldersOnly,
     doenetMLDoubleClickCallback: props.doenetMLDoubleClickCallback,
     numColumns,
+    viewAccess,
     drivePathSyncKey: props.drivePathSyncKey
   }), /* @__PURE__ */ React.createElement(WithDropTarget, {
     key: DropTargetsConstant.INVALID_DROP_AREA_ID,
@@ -598,7 +595,6 @@ export const fetchDrivesSelector = selector({
     }
     if (labelTypeDriveIdColorImage.type === "new content drive") {
       newDrive = {
-        courseId: null,
         driveId: labelTypeDriveIdColorImage.newDriveId,
         isShared: "0",
         label: labelTypeDriveIdColorImage.label,
@@ -610,7 +606,6 @@ export const fetchDrivesSelector = selector({
       axios.get("/api/addDrive.php", payload);
     } else if (labelTypeDriveIdColorImage.type === "new course drive") {
       newDrive = {
-        courseId: null,
         driveId: labelTypeDriveIdColorImage.newDriveId,
         isShared: "0",
         label: labelTypeDriveIdColorImage.label,
@@ -699,7 +694,6 @@ function Folder(props) {
   }
   const setDrivePath = useSetRecoilState(drivePathSyncFamily(drivePathSyncKey));
   const [folderInfoObj, setFolderInfo] = useRecoilStateLoadable(folderInfoSelector({driveId: props.driveId, instanceId: props.driveInstanceId, folderId: props.folderId}));
-  const {folderInfo, contentsDictionary, contentIdsArr} = folderInfoObj.contents;
   const {onDragStart, onDrag, onDragOverContainer, onDragEnd, onDragExit, renderDragGhost, registerDropTarget, unregisterDropTarget} = useDnDCallbacks();
   const {dropState} = useContext(DropTargetsContext);
   const [dragState, setDragState] = useRecoilState(dragStateAtom);
@@ -775,11 +769,25 @@ function Folder(props) {
   if (folderInfoObj.state === "loading") {
     return null;
   }
-  let openCloseText = isOpen ? /* @__PURE__ */ React.createElement(FontAwesomeIcon, {
+  if (folderInfoObj.state === "hasError") {
+    console.error(folderInfoObj.contents);
+    return null;
+  }
+  let {folderInfo, contentsDictionary, contentIdsArr} = folderInfoObj.contents;
+  if (props.viewAccess === "released") {
+    contentIdsArr = contentIdsArr.filter((id) => contentsDictionary[id].itemType === "Folder" || (contentsDictionary[id].isReleased === "1" || contentsDictionary[id].isAssigned === "1"));
+  } else if (props.viewAccess === "assigned") {
+    contentIdsArr = contentIdsArr.filter((id) => contentsDictionary[id].itemType === "Folder" || contentsDictionary[id].isAssigned === "1");
+  }
+  let openCloseText = isOpen ? /* @__PURE__ */ React.createElement("span", {
+    "data-cy": "folderToggleCloseIcon"
+  }, /* @__PURE__ */ React.createElement(FontAwesomeIcon, {
     icon: faChevronDown
-  }) : /* @__PURE__ */ React.createElement(FontAwesomeIcon, {
+  })) : /* @__PURE__ */ React.createElement("span", {
+    "data-cy": "folderToggleOpenIcon"
+  }, /* @__PURE__ */ React.createElement(FontAwesomeIcon, {
     icon: faChevronRight
-  });
+  }));
   let openCloseButton = /* @__PURE__ */ React.createElement("button", {
     style: {border: "none", backgroundColor: bgcolor, borderRadius: "5px"},
     "data-doenet-driveinstanceid": props.driveInstanceId,
@@ -862,31 +870,13 @@ function Folder(props) {
   const onDragEndCb = () => {
     onDragEnd();
   };
-  const sortNodeButtonFactory = ({buttonLabel, sortKey, sortHandler: sortHandler2}) => {
-    return /* @__PURE__ */ React.createElement("button", {
-      style: {backgroundColor: "#1A5A99", color: "white", border: "none", borderRadius: "12px", height: "24px", margin: "2px"},
-      tabIndex: -1,
-      onClick: (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        sortHandler2({sortKey});
-      },
-      onMouseDown: (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      },
-      onDoubleClick: (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    }, buttonLabel);
-  };
   let label = folderInfo?.label;
   let folder = null;
   let items = null;
   if (!props.driveObj) {
     folder = /* @__PURE__ */ React.createElement("div", {
       "data-doenet-driveinstanceid": props.driveInstanceId,
+      "data-cy": "driveItem",
       tabIndex: 0,
       className: "noselect nooutline",
       style: {
@@ -937,9 +927,13 @@ function Folder(props) {
       }
     }, /* @__PURE__ */ React.createElement("div", {
       style: {display: "inline", margin: "0px"}
-    }, openCloseButton, " ", /* @__PURE__ */ React.createElement(FontAwesomeIcon, {
+    }, openCloseButton, /* @__PURE__ */ React.createElement("span", {
+      "data-cy": "folderIcon"
+    }, /* @__PURE__ */ React.createElement(FontAwesomeIcon, {
       icon: faFolder
-    }), " ", label), " "));
+    })), /* @__PURE__ */ React.createElement("span", {
+      "data-cy": "folderLabel"
+    }, label))));
   } else if (props.driveObj && props.isNav) {
     let driveIcon = /* @__PURE__ */ React.createElement(FontAwesomeIcon, {
       icon: faBookOpen
@@ -952,6 +946,7 @@ function Folder(props) {
     label = props.driveObj.label;
     folder = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", {
       "data-doenet-driveinstanceid": props.driveInstanceId,
+      "data-cy": "navDriveHeader",
       tabIndex: 0,
       className: "noselect nooutline",
       style: {
@@ -1128,7 +1123,9 @@ function Folder(props) {
       }));
     }
   }
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, folder, items);
+  return /* @__PURE__ */ React.createElement("div", {
+    "data-cy": "drive"
+  }, folder, items);
 }
 const EmptyNode = React.memo(function Node(props) {
   return /* @__PURE__ */ React.createElement("div", {
@@ -1144,6 +1141,7 @@ const EmptyNode = React.memo(function Node(props) {
 const DragShadow = React.memo(function Node2(props) {
   const indentPx = 30;
   return /* @__PURE__ */ React.createElement("div", {
+    "data-cy": "dragShadow",
     style: {
       width: "100%",
       height: "33px",
@@ -1393,6 +1391,7 @@ const DoenetML = React.memo((props) => {
   };
   let doenetMLJSX = /* @__PURE__ */ React.createElement("div", {
     "data-doenet-driveinstanceid": props.driveInstanceId,
+    "data-cy": "driveItem",
     tabIndex: 0,
     className: "noselect nooutline",
     style: {
@@ -1450,9 +1449,13 @@ const DoenetML = React.memo((props) => {
     }
   }, /* @__PURE__ */ React.createElement("p", {
     style: {display: "inline", margin: "0px"}
+  }, /* @__PURE__ */ React.createElement("span", {
+    "data-cy": "doenetMLIcon"
   }, /* @__PURE__ */ React.createElement(FontAwesomeIcon, {
     icon: faCode
-  }), " ", label, " "), props.numColumns >= 2 ? /* @__PURE__ */ React.createElement("span", null, date) : null, props.numColumns >= 3 ? /* @__PURE__ */ React.createElement("span", null, published) : null, props.numColumns >= 4 ? /* @__PURE__ */ React.createElement("span", null, assigned) : null));
+  })), /* @__PURE__ */ React.createElement("span", {
+    "data-cy": "doenetMLLabel"
+  }, label, " ")), props.numColumns >= 2 ? /* @__PURE__ */ React.createElement("span", null, date) : null, props.numColumns >= 3 ? /* @__PURE__ */ React.createElement("span", null, published) : null, props.numColumns >= 4 ? /* @__PURE__ */ React.createElement("span", null, assigned) : null));
   if (!props.isNav) {
     const onDragStartCallback = () => {
       if (globalSelectedNodes.length === 0 || !isSelected) {
@@ -1880,6 +1883,7 @@ function useUpdateBreadcrumb(props) {
         }
       }
     }, /* @__PURE__ */ React.createElement(Link, {
+      "data-cy": "breadcrumbDriveColumn",
       style: breadcrumbItemStyle,
       to: driveDestinationLink
     }, props.driveLabel));
@@ -1960,6 +1964,7 @@ const DragGhost = ({id, element, numItems, copyMode = false}) => {
   }
   dragGhost = /* @__PURE__ */ React.createElement("div", {
     id,
+    "data-cy": "dragGhost",
     style: containerStyle
   }, dragGhost);
   return dragGhost;

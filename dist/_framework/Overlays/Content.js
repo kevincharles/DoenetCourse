@@ -19,7 +19,7 @@ export default function Content({branchId = "", contentId = "", title}) {
       contentId: contentId ? contentId : branchId,
       flags: {
         showCorrectness: true,
-        readOnly: true,
+        readOnly: false,
         solutionDisplayMode,
         showFeedback: true,
         showHints: true

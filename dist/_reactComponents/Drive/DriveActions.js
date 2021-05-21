@@ -1,9 +1,7 @@
-import React from "../../_snowpack/pkg/react.js";
 import {nanoid} from "../../_snowpack/pkg/nanoid.js";
 import axios from "../../_snowpack/pkg/axios.js";
 import {
-  useRecoilCallback,
-  useRecoilValue
+  useRecoilCallback
 } from "../../_snowpack/pkg/recoil.js";
 import {
   folderDictionarySelector,
@@ -310,23 +308,23 @@ export const useCopyItems = () => {
     let promises = [];
     for (let newItemId of Object.keys(globalDictionary)) {
       let newItem = globalDictionary[newItemId];
-      const data = {
+      const addItemsParams = {
         driveId: targetDriveId,
         parentFolderId: newItem.parentFolderId,
         itemId: newItemId,
         branchId: newItem.branchId,
-        versionId: nanoid(),
+        versionId: newItem.versionId,
         label: newItem.label,
         type: newItem.itemType,
-        sortOrder: newItem.sortOrder
+        sortOrder: newItem.sortOrder,
+        isNewCopy: "1"
       };
       if (newItem.itemType === "DoenetML") {
         const newDoenetML = cloneDoenetML({item: newItem, timestamp: creationTimestamp});
         promises.push(axios.post("/api/saveNewVersion.php", newDoenetML));
-        data["branchId"] = newDoenetML?.branchId;
       }
       const payload = {
-        params: data
+        params: addItemsParams
       };
       const result2 = axios.get("/api/addItem.php", payload);
       promises.push(result2);
@@ -376,9 +374,10 @@ export const useCopyItems = () => {
     const itemInfo = itemParentFolder["contentsDictionary"][item.itemId];
     const newItem = {...itemInfo};
     const newItemId = nanoid();
-    const newBranchId = nanoid();
     newItem.itemId = newItemId;
-    newItem.branchId = newBranchId;
+    newItem.branchId = nanoid();
+    newItem.versionId = nanoid();
+    newItem.previousBranchId = itemInfo.branchId;
     if (itemInfo.itemType === "Folder") {
       const {contentIds} = await snapshot2.getPromise(folderDictionary({driveId: item.driveId, folderId: item.itemId}));
       globalContentIds[newItemId] = [];
@@ -409,13 +408,15 @@ export const useCopyItems = () => {
   const cloneDoenetML = ({item, timestamp}) => {
     let newVersion = {
       title: item.label,
-      branchId: nanoid(),
+      branchId: item.branchId,
       contentId: item.contentId,
-      versionId: nanoid(),
+      versionId: item.versionId,
       timestamp,
       isDraft: "0",
       isNamed: "1",
-      doenetML: item.doenetML
+      isNewCopy: "1",
+      doenetML: item.doenetML,
+      previousBranchId: item.previousBranchId
     };
     return newVersion;
   };
@@ -730,7 +731,12 @@ export const useAssignmentCallbacks = () => {
       let newItemObj = newObj.contentsDictionary[itemId];
       newItemObj.isAssignment = "1";
       newItemObj.assignment_title = payloadAssignment?.assignment_title;
-      newItemObj.assignmentId = payloadAssignment?.assignmentId;
+      newItemObj.assignedDate = payloadAssignment?.assignedDate;
+      newItemObj.dueDate = payloadAssignment?.dueDate;
+      newItemObj.timeLimit = payloadAssignment?.timeLimit;
+      newItemObj.numberOfAttemptsAllowed = payloadAssignment?.numberOfAttemptsAllowed;
+      newItemObj.totalPointsOrPercent = payloadAssignment?.totalPointsOrPercent;
+      newItemObj.gradeCategory = payloadAssignment?.gradeCategory;
       return newObj;
     });
   });

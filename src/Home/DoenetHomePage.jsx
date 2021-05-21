@@ -1,7 +1,7 @@
 import React from 'react';
 import Tool from '../Tools/_framework/Tool';
-import logo from '../Media/Doenet_Logo_Frontpage.png';
-import doenetImage from '../Media/Doenet_Logo_cloud_only.png';
+import logo from '../media/Doenet_Logo_Frontpage.png';
+import doenetImage from '../media/Doenet_Logo_cloud_only.png';
 import styled from 'styled-components';
 import './homepage.css' ;
 
