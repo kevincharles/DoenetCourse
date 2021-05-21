@@ -85,7 +85,7 @@ import {parse,parseAndCompile,showCursor} from '../../Parser/parser.js';
 
 
 ReactDOM.render(
-  <p>temp2</p>,
+  <p>temp</p>,
   document.getElementById('root'),
 );
 
