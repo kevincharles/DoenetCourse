@@ -60,6 +60,7 @@ import {
 import { IsNavContext } from '../../Tools/_framework/Panels/NavPanel'
 import { useToast } from '../../Tools/_framework/Toast';
 import useKeyPressedListener from '../KeyPressedListener/useKeyPressedListener';
+import { doenetContent } from '../../Tools/_framework/Overlays/Editor';
 
 const fetchDriveUsersQuery = atomFamily({
   key:"fetchDriveUsersQuery",
@@ -340,6 +341,18 @@ export const folderDictionary = atomFamily({
       let folderInfo = {};
       for (let item of driveInfo.results){
         if (item.parentFolderId === driveIdFolderId.folderId){
+          //Item is in the folder
+          if (item.itemType === "DoenetML"){
+          console.log(">>>item",item)
+          const { updateContentInfo } = get(doenetContent(item.branchId));
+            updateContentInfo({
+              isAssigned:item.isAssigned,
+              isPublic:item.isPublic,
+              isReleased:item.isReleased,
+              label:item.label
+            })
+          }
+          // doenetContent
           defaultOrder.push(item.itemId);
           contentsDictionary[item.itemId] = item;
         }
@@ -349,6 +362,7 @@ export const folderDictionary = atomFamily({
       }
       defaultOrder = sortItems({sortKey: sortOptions.DEFAULT, nodeObjs: contentsDictionary, defaultFolderChildrenIds: defaultOrder});
       contentIds[sortOptions.DEFAULT] = defaultOrder;
+      // console.log(">>>{folderInfo,contentsDictionary,contentIds}",{folderInfo,contentsDictionary,contentIds})
       return {folderInfo,contentsDictionary,contentIds}
     } 
   })

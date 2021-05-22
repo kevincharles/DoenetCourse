@@ -58,6 +58,51 @@ const viewerDoenetMLAtom = atom({
   default:{updateNumber:0,doenetML:""}
 })
 
+//For loading content information without drive
+let doenetQuery = selectorFamily({
+  key:"doenetQuery",
+  get: (branchId) => async ({get,set})=>{
+    // const { data } = await axios.get(
+    //   `/api/loadContentInfo.php?branchId=${branchId}`
+    // );
+    
+    const data = {label:"fake",isReleased:"0",isAssigned:"0",isPublic:"0"}
+    console.log(">>>doenetQuery",branchId,data)
+    return data;
+  },
+ 
+})
+
+export const doenetContent = selectorFamily({
+  key:"doenetContent",
+  get:(branchId)=> ({get,getCallback})=>{
+    console.log(">>>called doenetContent",branchId)
+    const value = get(doenetQuery(branchId)); //load from database
+    const updateContentInfo = getCallback(({set,snapshot}) => (info)=>{
+      console.log(">>>updateContentInfo info",info);
+      console.log(">>>set",set)
+      console.log(">>>snapshot",snapshot)
+      //HOW Do we set the value?
+      //TODO: Only update keys given
+      // set(doenetContent(branchId),(was)=>{
+      //   console.log(">>>was",was)
+      //   let newContent = {...was}
+      //   newContent.value = info
+      //   return newContent
+      // });
+      // set(doenetQuery(branchId),(was)=>{
+      //   console.log(">>>was",was)
+      //   let newContent = {...was}
+      //   // newContent.value = info
+      //   return newContent
+      // });
+
+    })
+    
+    return {value, updateContentInfo}
+  }
+})
+
 const getSHAofContent = (doenetML)=>{
   if (doenetML === undefined){
     return;
