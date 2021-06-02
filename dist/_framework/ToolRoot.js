@@ -1,9 +1,11 @@
 import React, {useState, lazy, Suspense, useRef} from "../_snowpack/pkg/react.js";
 import {
   atom,
+  selector,
   useSetRecoilState,
   useRecoilValue,
-  useRecoilCallback
+  useRecoilCallback,
+  useRecoilValueLoadable
 } from "../_snowpack/pkg/recoil.js";
 import styled from "../_snowpack/pkg/styled-components.js";
 import Toast from "./Toast.js";
@@ -161,22 +163,38 @@ export const useStackId = () => {
   return stackId;
 };
 export const ProfileContext = React.createContext({});
+export const profileAtom = atom({
+  key: "profileAtom",
+  default: selector({
+    key: "profileAtom/Default",
+    get: async () => {
+      try {
+        const profile = JSON.parse(localStorage.getItem("Profile"));
+        if (profile) {
+          return profile;
+        }
+        const {data} = await axios.get("/api/loadProfile.php");
+        localStorage.setItem("Profile", JSON.stringify(data.profile));
+        return data.profile;
+      } catch (error) {
+        console.log("Error loading user profile", error.message);
+        return {};
+      }
+    }
+  })
+});
 export default function ToolRoot({tool}) {
   const overlays = useRecoilValue(layerStackAtom);
-  const [_, setRefresh] = useState(0);
-  const profile = JSON.parse(localStorage.getItem("Profile"));
-  if (!profile) {
-    axios.get("/api/loadProfile.php", {params: {}}).then((resp) => {
-      if (resp.data.success === "1") {
-        localStorage.setItem("Profile", JSON.stringify(resp.data.profile));
-        setRefresh((was) => was + 1);
-      }
-    }).catch((error) => {
-    });
+  const profile = useRecoilValueLoadable(profileAtom);
+  if (profile.state === "loading") {
+    return null;
+  }
+  if (profile.state === "hasError") {
+    console.error(profile.contents);
     return null;
   }
   return /* @__PURE__ */ React.createElement(ProfileContext.Provider, {
-    value: profile
+    value: profile.contents
   }, /* @__PURE__ */ React.createElement(Suspense, {
     fallback: /* @__PURE__ */ React.createElement(LoadingFallback, null, "loading...")
   }, tool, overlays.map((layer, idx) => idx == overlays.length - 1 ? layer : null)), /* @__PURE__ */ React.createElement(Toast, null));
