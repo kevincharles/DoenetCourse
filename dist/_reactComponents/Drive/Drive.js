@@ -54,6 +54,7 @@ import {
 import {IsNavContext} from "../../_framework/Panels/NavPanel.js";
 import {useToast} from "../../_framework/Toast.js";
 import useKeyPressedListener from "../KeyPressedListener/useKeyPressedListener.js";
+import {loadAssignmentSelector} from "../../course/Course.js";
 const fetchDriveUsersQuery = atomFamily({
   key: "fetchDriveUsersQuery",
   default: selectorFamily({
@@ -1322,6 +1323,11 @@ const selectedDriveItems = selectorFamily({
   }
 });
 function columnJSX(columnType, item) {
+  const assignmentInfoSettings = useRecoilValueLoadable(loadAssignmentSelector(item.branchId));
+  let aInfo = "";
+  if (assignmentInfoSettings?.state === "hasValue") {
+    aInfo = assignmentInfoSettings?.contents?.assignments[0];
+  }
   if (columnType === "Released" && item.isReleased === "1") {
     return /* @__PURE__ */ React.createElement("span", {
       style: {textAlign: "center"}
@@ -1340,11 +1346,10 @@ function columnJSX(columnType, item) {
     }, /* @__PURE__ */ React.createElement(FontAwesomeIcon, {
       icon: faCheck
     }));
-  } else if (columnType === "Due Date") {
-    let date = item.creationDate.slice(0, 10);
+  } else if (columnType === "Due Date" && item.isAssigned === "1") {
     return /* @__PURE__ */ React.createElement("span", {
       style: {textAlign: "center"}
-    }, date);
+    }, aInfo?.dueDate);
   }
   return /* @__PURE__ */ React.createElement("span", null);
 }

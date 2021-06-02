@@ -49,7 +49,7 @@ export const selectedVersionAtom = atom({
   key: "selectedVersionAtom",
   default: ""
 });
-const loadAssignmentSelector = selectorFamily({
+export const loadAssignmentSelector = selectorFamily({
   key: "loadAssignmentSelector",
   get: (branchId) => async ({get, set}) => {
     const {data} = await axios.get(`/api/getAllAssignmentSettings.php?branchId=${branchId}`);
@@ -276,12 +276,10 @@ export default function Course(props) {
     subTypes: ["Student"]
   })))), routePathDriveId && /* @__PURE__ */ React.createElement("menuPanel", {
     isInitOpen: true,
-    title: "Assigned"
+    title: "Assignment"
   }, /* @__PURE__ */ React.createElement(VersionInfo, {
     route: props.route
-  }), /* @__PURE__ */ React.createElement("br", null)), /* @__PURE__ */ React.createElement("menuPanel", {
-    title: "Info"
-  }, /* @__PURE__ */ React.createElement(ItemInfoPanel, {
+  }), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement(ItemInfoPanel, {
     route: props.route
   }))));
 }
@@ -390,8 +388,8 @@ const DoenetMLInfoPanel = (props) => {
       return false;
     }
   };
-  if (itemInfo.isAssigned === "1" && checkIsVersionAssigned()) {
-    assignmentForm = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Assigned Date:"), /* @__PURE__ */ React.createElement("input", {
+  if (itemInfo.isAssigned === "1") {
+    assignmentForm = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h3", null, "Assignment Info"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Assigned Date:"), /* @__PURE__ */ React.createElement("input", {
       required: true,
       type: "text",
       name: "assignedDate",
@@ -428,10 +426,10 @@ const DoenetMLInfoPanel = (props) => {
     }, /* @__PURE__ */ React.createElement("option", {
       value: "m",
       selected: aInfo?.attemptAggregation === "m" ? "selected" : ""
-    }, "m"), /* @__PURE__ */ React.createElement("option", {
+    }, "Maximum"), /* @__PURE__ */ React.createElement("option", {
       value: "l",
       selected: aInfo?.attemptAggregation === "l" ? "selected" : ""
-    }, "l"))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Total Points Or Percent: "), /* @__PURE__ */ React.createElement("input", {
+    }, "Last Attempt"))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Total Points Or Percent: "), /* @__PURE__ */ React.createElement("input", {
       required: true,
       type: "number",
       name: "totalPointsOrPercent",
