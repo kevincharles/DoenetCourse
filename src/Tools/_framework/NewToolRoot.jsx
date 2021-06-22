@@ -112,10 +112,7 @@ let toolsObj = {
   },
   notfound:{
     toolName:"Notfound",
-    menuPanelTypes:[],
-    menuPanelsInitOpen:[],
     mainPanelType:"NotFound",
-    supportPanelTypes:[],
     noMenuPanels: true,
   }
 }
