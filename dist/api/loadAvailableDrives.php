@@ -32,7 +32,7 @@ if ($success) {
    FROM drive AS d
   LEFT JOIN drive_user AS du
   ON d.driveId = du.driveId
-  WHERE du.userId='devuserid'  AND d.isDeleted = '0'
+  WHERE du.userId='$userId'  AND d.isDeleted = '0'
   ";
 
     $result = $conn->query($sqlnew);
@@ -57,6 +57,7 @@ if ($success) {
   WHERE du.userId='$userId' AND du.driveId = '$newdriveId'
   AND d.isDeleted = '0'
   ";
+  
         $resultnew = $conn->query($sql);
         while ($rownew = $resultnew->fetch_assoc()) {
             $driveAndLabel = [
