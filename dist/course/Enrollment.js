@@ -50,7 +50,10 @@ export default function Enrollment(params) {
   for (let [i, rowData] of enrollmentTableData.entries()) {
     enrollmentRows.push(/* @__PURE__ */ React.createElement("tr", {
       key: `erow${i}`
-    }, /* @__PURE__ */ React.createElement("td", null, rowData.firstName, " ", rowData.lastName), /* @__PURE__ */ React.createElement("td", null, rowData.section), /* @__PURE__ */ React.createElement("td", null, rowData.empId), /* @__PURE__ */ React.createElement("td", null, rowData.email), /* @__PURE__ */ React.createElement("td", null, rowData.dateEnrolled)));
+    }, /* @__PURE__ */ React.createElement("td", null, rowData.firstName, " ", rowData.lastName), /* @__PURE__ */ React.createElement("td", null, rowData.section), /* @__PURE__ */ React.createElement("td", null, rowData.empId), /* @__PURE__ */ React.createElement("td", null, rowData.email), /* @__PURE__ */ React.createElement("td", null, rowData.dateEnrolled), /* @__PURE__ */ React.createElement("td", null, " ", /* @__PURE__ */ React.createElement(Button, {
+      value: "Withdraw",
+      callback: (e) => withDrawLearners(e, rowData.email)
+    }))));
   }
   const enrollmentTable = /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "Name"), /* @__PURE__ */ React.createElement("th", null, "Section"), /* @__PURE__ */ React.createElement("th", null, "ID"), /* @__PURE__ */ React.createElement("th", null, "Email"), /* @__PURE__ */ React.createElement("th", null, "Date Enrolled"))), /* @__PURE__ */ React.createElement("tbody", null, enrollmentRows));
   if (process === "Choose Columns") {
@@ -224,7 +227,6 @@ export default function Enrollment(params) {
     }
   }
   const [enrolllearner, setEnrolllearner] = useState();
-  const [withdrewLearner, setWithdrewLearner] = useState();
   const enrollManual = (e) => {
     e.preventDefault();
     let payload = {
@@ -244,7 +246,7 @@ export default function Enrollment(params) {
       });
     });
   };
-  const withDrawLearners = (e) => {
+  const withDrawLearners = (e, withdrewLearner) => {
     e.preventDefault();
     let payload = {
       email: withdrewLearner,
@@ -256,7 +258,6 @@ export default function Enrollment(params) {
         let enrollmentArray = resp2.data.enrollmentArray;
         setEnrollmentTableData(enrollmentArray);
         setProcess("Display Enrollment");
-        setWithdrewLearner("");
       }).catch((error) => {
         console.warn(error);
       });
@@ -264,9 +265,6 @@ export default function Enrollment(params) {
   };
   const handleChange = (e) => {
     setEnrolllearner(e.currentTarget.value);
-  };
-  const handlewithDrew = (e) => {
-    setWithdrewLearner(e.currentTarget.value);
   };
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", {
     key: "drop",
@@ -285,15 +283,5 @@ export default function Enrollment(params) {
   }), /* @__PURE__ */ React.createElement(Button, {
     value: "Enroll",
     callback: (e) => enrollManual(e)
-  })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Withdraw:"), /* @__PURE__ */ React.createElement("input", {
-    required: true,
-    type: "email",
-    name: "email",
-    value: withdrewLearner,
-    placeholder: "example@example.com",
-    onChange: handlewithDrew
-  }), /* @__PURE__ */ React.createElement(Button, {
-    value: "Withdraw",
-    callback: (e) => withDrawLearners(e)
   })));
 }

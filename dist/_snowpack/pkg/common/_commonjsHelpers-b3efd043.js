@@ -22,4 +22,4 @@ function commonjsRequire () {
 	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
 }
 
-export { commonjsGlobal as a, getDefaultExportFromNamespaceIfNotNamed as b, createCommonjsModule as c, commonjsRequire as d, getDefaultExportFromCjs as g };
+export { commonjsGlobal as a, commonjsRequire as b, createCommonjsModule as c, getDefaultExportFromNamespaceIfNotNamed as d, getDefaultExportFromCjs as g };

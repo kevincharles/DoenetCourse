@@ -32,7 +32,8 @@ import {
   useRecoilValueLoadable,
   useRecoilStateLoadable,
   useRecoilState,
-  useRecoilValue
+  useRecoilValue,
+  useRecoilCallback
 } from "../../_snowpack/pkg/recoil.js";
 import {
   DropTargetsContext,
@@ -281,7 +282,7 @@ export default function Drive(props) {
     return null;
   }
 }
-let loadDriveInfoQuery = selectorFamily({
+export const loadDriveInfoQuery = selectorFamily({
   key: "loadDriveInfoQuery",
   get: (driveId) => async ({get, set}) => {
     const {data} = await axios.get(`/api/loadFolderContent.php?driveId=${driveId}&init=true`);
@@ -1331,6 +1332,7 @@ const selectedDriveItems = selectorFamily({
   }
 });
 function columnJSX(columnType, item) {
+  let courseRole = "";
   const assignmentInfoSettings = useRecoilValueLoadable(loadAssignmentSelector(item.doenetId));
   let aInfo = "";
   if (assignmentInfoSettings?.state === "hasValue") {

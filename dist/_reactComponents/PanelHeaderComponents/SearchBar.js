@@ -50,7 +50,11 @@ export default function Searchbar(props) {
     overflow: "hidden"
   };
   if (props.width) {
-    searchBar.width = props.width;
+    if (props.width === "menu") {
+      searchBar.width = "130px";
+    } else {
+      searchBar.width = props.width;
+    }
   }
   function clearInput() {
     document.getElementById("search").value = "";

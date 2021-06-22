@@ -28,7 +28,8 @@ export default class Vector extends DoenetRenderer {
       strokeColor: this.doenetSvData.selectedStyle.markerColor,
       highlightStrokeColor: this.doenetSvData.selectedStyle.markerColor,
       strokeWidth: this.doenetSvData.selectedStyle.lineWidth,
-      dash: styleToDash(this.doenetSvData.selectedStyle.lineStyle)
+      dash: styleToDash(this.doenetSvData.selectedStyle.lineStyle),
+      lastArrow: {type: 1, size: 3, highlightSize: 3}
     };
     if (!this.doenetSvData.draggable || this.doenetSvData.fixed) {
       jsxVectorAttributes.highlightStrokeWidth = this.doenetSvData.selectedStyle.lineWidth;

@@ -18,14 +18,25 @@ export default function Button(props) {
     button.height = "36px", button.fontSize = "18px";
   }
   ;
-  if (button.width < button.height) {
-    button.width = "85px";
+  if (props.width) {
+    if (props.width === "menu") {
+      button.width = "235px";
+    } else {
+      button.width = props.width;
+    }
   }
-  ;
-  if (props.value) {
-    button.value = props.value;
+  var icon = "";
+  if (props.value || props.icon) {
+    if (props.value && props.icon) {
+      icon = props.icon;
+      button.value = props.value;
+    } else if (props.value) {
+      button.value = props.value;
+    } else if (props.icon) {
+      icon = props.icon;
+      button.value = "";
+    }
   }
-  ;
   function handleClick(e) {
     if (props.callback)
       props.callback(e);
@@ -36,5 +47,5 @@ export default function Button(props) {
     onClick: (e) => {
       handleClick(e);
     }
-  }, button.value));
+  }, icon, " ", button.value));
 }

@@ -56,6 +56,13 @@ export default function ToggleButton(props) {
   if (props.label) {
     label.value = props.label;
   }
+  if (props.width) {
+    if (props.width === "menu") {
+      toggleButton.width = "235px";
+    } else {
+      toggleButton.width = props.width;
+    }
+  }
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", {
     style: label
   }, label.value), /* @__PURE__ */ React.createElement("button", {

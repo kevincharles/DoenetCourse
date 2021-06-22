@@ -22,8 +22,6 @@ import {
   useRecoilCallback
 } from "../_snowpack/pkg/recoil.js";
 import axios from "../_snowpack/pkg/axios.js";
-import "../_snowpack/pkg/codemirror/lib/codemirror.css.proxy.js";
-import "../_snowpack/pkg/codemirror/theme/material.css.proxy.js";
 import Drive, {
   globalSelectedNodesAtom,
   folderDictionary,
@@ -603,7 +601,8 @@ function AddCourseDriveButton() {
       type: "course",
       image,
       color,
-      subType: "Administrator"
+      subType: "Administrator",
+      role: ["Owner"]
     };
     const payload = {params: {
       driveId: newDriveId,
@@ -839,8 +838,7 @@ export default function Library(props) {
     className: routePathDriveId ? "" : "mainPanelStyle"
   }, /* @__PURE__ */ React.createElement(DriveCards, {
     drivePathSyncKey: "main",
-    types: ["course"],
-    subTypes: ["Administrator"]
+    types: ["course"]
   }))), /* @__PURE__ */ React.createElement("supportPanel", null, supportBreadcrumbContainer, /* @__PURE__ */ React.createElement(Container, null, /* @__PURE__ */ React.createElement(Drive, {
     drivePathSyncKey: "support",
     types: ["content", "course"],
@@ -862,8 +860,7 @@ export default function Library(props) {
     className: routePathDriveId ? "" : "mainPanelStyle"
   }, /* @__PURE__ */ React.createElement(DriveCards, {
     drivePathSyncKey: "support",
-    types: ["course"],
-    subTypes: ["Administrator"]
+    types: ["course"]
   }))), /* @__PURE__ */ React.createElement("menuPanel", {
     title: "Selected",
     isInitOpen: true

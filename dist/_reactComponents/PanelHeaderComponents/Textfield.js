@@ -16,6 +16,13 @@ export default function Textfield(props) {
   if (props.value) {
     textfield.value = props.value;
   }
+  if (props.width) {
+    if (props.width === "menu") {
+      textfield.width = "235px";
+    } else {
+      textfield.width = props.width;
+    }
+  }
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("textarea", {
     defaultValue: textfield.value,
     style: textfield

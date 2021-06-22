@@ -1,9 +1,9 @@
 import { b as _extends, _ as _inheritsLoose, a as _objectWithoutPropertiesLoose } from './common/inheritsLoose-adbe5217.js';
-import { r as react } from './common/index-f66788ca.js';
-import { p as propTypes } from './common/index-4bda1d4e.js';
+import { r as react } from './common/index-61a7c514.js';
+import { p as propTypes } from './common/index-01840a39.js';
 import { g as global } from './common/_polyfill-node:global-acbc543a.js';
-import { c as createCommonjsModule } from './common/_commonjsHelpers-f5d70792.js';
-import './common/hoist-non-react-statics.cjs-fd576625.js';
+import { c as createCommonjsModule } from './common/_commonjsHelpers-b3efd043.js';
+import './common/hoist-non-react-statics.cjs-99a47c26.js';
 
 function isAbsolute(pathname) {
   return pathname.charAt(0) === '/';
@@ -2100,6 +2100,10 @@ function useHistory() {
 
   return useContext(historyContext);
 }
+function useLocation() {
+
+  return useContext(context).location;
+}
 
 /**
  * The public API for a <Router> that uses HTML5 history.
@@ -2342,4 +2346,4 @@ var NavLink = forwardRef$1(function (_ref, forwardedRef) {
   });
 });
 
-export { BrowserRouter, HashRouter, Link, Route, Switch, useHistory };
+export { BrowserRouter, HashRouter, Link, Route, Switch, useHistory, useLocation };

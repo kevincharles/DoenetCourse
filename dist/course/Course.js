@@ -10,16 +10,17 @@ import {
   atomFamily
 } from "../_snowpack/pkg/recoil.js";
 import axios from "../_snowpack/pkg/axios.js";
-import "../_snowpack/pkg/codemirror/lib/codemirror.css.proxy.js";
-import "../_snowpack/pkg/codemirror/theme/material.css.proxy.js";
 import Drive, {
   folderDictionaryFilterSelector,
   clearDriveAndItemSelections,
   drivePathSyncFamily,
-  folderDictionaryFilterAtom
+  folderDictionaryFilterAtom,
+  loadDriveInfoQuery,
+  fetchDrivesSelector
 } from "../_reactComponents/Drive/Drive.js";
 import {BreadcrumbContainer} from "../_reactComponents/Breadcrumb/index.js";
 import Button from "../_reactComponents/PanelHeaderComponents/Button.js";
+import Increment from "../_reactComponents/PanelHeaderComponents/IncrementMenu.js";
 import DriveCards from "../_reactComponents/Drive/DriveCards.js";
 import "../_reactComponents/Drive/drivecard.css.proxy.js";
 import "../_utils/util.css.proxy.js";
@@ -80,7 +81,7 @@ export const assignmentDictionary = atomFamily({
   })
 });
 let assignmentDictionarySelector = selectorFamily({
-  key: "assignmentDictionaryNewSelector",
+  key: "assignmentDictionarySelector",
   get: (driveIditemIddoenetIdparentFolderId) => ({get}) => {
     return get(assignmentDictionary(driveIditemIddoenetIdparentFolderId));
   }
@@ -135,6 +136,14 @@ export default function Course(props) {
   if (urlParamsObj?.path !== void 0) {
     [routePathDriveId] = urlParamsObj.path.split(":");
   }
+  const drivesInfo = useRecoilValueLoadable(fetchDrivesSelector);
+  let driveInfo = [];
+  let courseRole = [];
+  if (drivesInfo.state === "hasValue") {
+    driveInfo = drivesInfo.contents.driveIdsAndLabels;
+    let selectedDriveInfo = driveInfo?.filter((item) => item.driveId == routePathDriveId);
+    courseRole = selectedDriveInfo[0]?.role;
+  }
   const [filter, setFilteredDrive] = useRecoilState(folderDictionaryFilterAtom({driveId: routePathDriveId}));
   useEffect(() => {
     if (routePathDriveId === "") {
@@ -146,6 +155,12 @@ export default function Course(props) {
   }
   if (filter === "All" && routePathDriveId !== "") {
     return null;
+  }
+  let columnsArr = [];
+  if (filter === "Released Only") {
+    columnsArr.push("Due Date", "Assigned");
+  } else {
+    columnsArr.push("Due Date");
   }
   function cleardrivecardSelection() {
     setDrivePath({
@@ -187,16 +202,6 @@ export default function Course(props) {
   if (role === "Instructor") {
     urlClickBehavior = "select";
   }
-  let responsiveControls = "";
-  if (routePathDriveId) {
-    responsiveControls = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Button, {
-      value: openEnrollment ? "Close Enrollment" : "Open Enrollment",
-      callback: (e) => setEnrollment(e)
-    }), /* @__PURE__ */ React.createElement("label", null, "View as Student"), /* @__PURE__ */ React.createElement(Switch, {
-      onChange: (e) => setViewAccessToggle(e),
-      checked: filter === "Released Only" ? false : true
-    }));
-  }
   const profile = useContext(ProfileContext);
   if (profile.signedIn === "0") {
     return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(GlobalFont, null), /* @__PURE__ */ React.createElement(Tool, null, /* @__PURE__ */ React.createElement("headerPanel", {
@@ -236,17 +241,14 @@ export default function Course(props) {
     driveId: routePathDriveId,
     foldersOnly: true,
     drivePathSyncKey: "main"
-  }))), /* @__PURE__ */ React.createElement("mainPanel", {
-    responsiveControls
-  }, /* @__PURE__ */ React.createElement(AutoSelect, null), openEnrollment ? /* @__PURE__ */ React.createElement(Enrollment, {
+  }))), /* @__PURE__ */ React.createElement("mainPanel", null, /* @__PURE__ */ React.createElement(AutoSelect, null), openEnrollment ? /* @__PURE__ */ React.createElement(Enrollment, {
     selectedCourse: enrollDriveId
   }) : /* @__PURE__ */ React.createElement(React.Fragment, null, breadcrumbContainer, /* @__PURE__ */ React.createElement("div", {
     onClick: () => {
       clearSelections();
     }
   }, /* @__PURE__ */ React.createElement(Container, null, /* @__PURE__ */ React.createElement(Drive, {
-    filter,
-    columnTypes: filter === "Released Only" ? ["Due Date", "Assigned"] : ["Due Date"],
+    columnTypes: columnsArr,
     driveId: routePathDriveId,
     hideUnpublished,
     subTypes: ["Administrator"],
@@ -262,27 +264,27 @@ export default function Course(props) {
   }))), /* @__PURE__ */ React.createElement("div", {
     onClick: cleardrivecardSelection,
     tabIndex: 0
-  }, !routePathDriveId && /* @__PURE__ */ React.createElement("h2", null, "Admin"), /* @__PURE__ */ React.createElement(DriveCards, {
+  }, /* @__PURE__ */ React.createElement(DriveCards, {
     routePathDriveId,
     isOneDriveSelect: true,
     types: ["course"],
-    drivePathSyncKey: "main",
-    subTypes: ["Administrator"]
-  }), !routePathDriveId && /* @__PURE__ */ React.createElement("h2", null, "Student"), /* @__PURE__ */ React.createElement(DriveCards, {
-    isOneDriveSelect: true,
-    routePathDriveId,
-    isOneDriveSelect: true,
-    types: ["course"],
-    drivePathSyncKey: "main",
-    subTypes: ["Student"]
+    drivePathSyncKey: "main"
   })))), routePathDriveId && /* @__PURE__ */ React.createElement("menuPanel", {
     isInitOpen: true,
     title: "Assignment"
-  }, /* @__PURE__ */ React.createElement(VersionInfo, {
+  }, /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(VersionInfo, {
     route: props.route
   }), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement(ItemInfoPanel, {
     route: props.route
-  }))));
+  }))), routePathDriveId && /* @__PURE__ */ React.createElement("menuPanel", {
+    title: "+Add"
+  }, /* @__PURE__ */ React.createElement(React.Fragment, null, courseRole[0] === "Owner" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Button, {
+    value: openEnrollment ? "Close Enrollment" : "Open Enrollment",
+    callback: (e) => setEnrollment(e)
+  }), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("label", null, "View as Student"), /* @__PURE__ */ React.createElement(Switch, {
+    onChange: (e) => setViewAccessToggle(e),
+    checked: filter === "Released Only" ? false : true
+  }))))));
 }
 const DoenetMLInfoPanel = (props) => {
   const {addContentAssignment, changeSettings, saveSettings, assignmentToContent, loadAvailableAssignment, publishContentAssignment, onAssignmentError} = useAssignment();
@@ -315,10 +317,11 @@ const DoenetMLInfoPanel = (props) => {
   }
   let assignmentForm = null;
   const [addToast, ToastType] = useToast();
+  const [oldValue, setoldValue] = useState();
   const handleChange = (event) => {
     event.preventDefault();
     let name = event.target.name;
-    let value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+    let value = event.target.value;
     const result = changeSettings({
       [name]: value,
       driveIditemIddoenetIdparentFolderId: {
@@ -330,55 +333,57 @@ const DoenetMLInfoPanel = (props) => {
         contentId: selectedContentId()
       }
     });
-    result.then((resp) => {
-      if (resp.data.success) {
-      } else {
-      }
-    }).catch((e) => {
-    });
+  };
+  const handleOnfocus = (event) => {
+    event.preventDefault();
+    let name = event.target.name;
+    let value = event.target.value;
+    setoldValue(event.target.value);
   };
   const handleOnBlur = (e) => {
     e.preventDefault();
     let name = e.target.name;
-    let value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
-    const result = saveSettings({
-      [name]: value,
-      driveIditemIddoenetIdparentFolderId: {
-        driveId: itemInfo.driveId,
-        folderId: itemInfo.parentFolderId,
+    let value = e.target.value;
+    if (value !== oldValue) {
+      const result = saveSettings({
+        [name]: value,
+        driveIditemIddoenetIdparentFolderId: {
+          driveId: itemInfo.driveId,
+          folderId: itemInfo.parentFolderId,
+          itemId: itemInfo.itemId,
+          doenetId: itemInfo.doenetId,
+          versionId: selectedVId,
+          contentId: selectedContentId()
+        }
+      });
+      let payload = {
+        ...aInfo,
         itemId: itemInfo.itemId,
+        isAssigned: "1",
+        [name]: value,
         doenetId: itemInfo.doenetId,
-        versionId: selectedVId,
-        contentId: selectedContentId()
-      }
-    });
-    let payload = {
-      ...aInfo,
-      itemId: itemInfo.itemId,
-      isAssigned: "1",
-      [name]: value,
-      doenetId: itemInfo.doenetId,
-      contentId: itemInfo.contentId
-    };
-    updateAssignmentTitle({
-      driveIdFolderId: {
-        driveId: itemInfo.driveId,
-        folderId: itemInfo.parentFolderId
-      },
-      itemId: itemInfo.itemId,
-      payloadAssignment: payload,
-      doenetId: itemInfo.doenetId,
-      contentId: itemInfo.contentId
-    });
-    result.then((resp) => {
-      if (resp.data.success) {
-        addToast(`Updated '${name}' to '${value}'`, ToastType.SUCCESS);
-      } else {
-        onAssignmentError({errorMessage: resp.data.message});
-      }
-    }).catch((e2) => {
-      onAssignmentError({errorMessage: e2.message});
-    });
+        contentId: itemInfo.contentId
+      };
+      updateAssignmentTitle({
+        driveIdFolderId: {
+          driveId: itemInfo.driveId,
+          folderId: itemInfo.parentFolderId
+        },
+        itemId: itemInfo.itemId,
+        payloadAssignment: payload,
+        doenetId: itemInfo.doenetId,
+        contentId: itemInfo.contentId
+      });
+      result.then((resp) => {
+        if (resp.data.success) {
+          addToast(`Updated '${name}' to '${value}'`, ToastType.SUCCESS);
+        } else {
+          onAssignmentError({errorMessage: resp.data.message});
+        }
+      }).catch((e2) => {
+        onAssignmentError({errorMessage: e2.message});
+      });
+    }
   };
   const checkIsVersionAssigned = () => {
     const selectedVId2 = useRecoilValue(selectedVersionAtom);
@@ -389,7 +394,15 @@ const DoenetMLInfoPanel = (props) => {
       return false;
     }
   };
-  if (itemInfo.isAssigned === "1") {
+  const drivesInfo = useRecoilValueLoadable(fetchDrivesSelector);
+  let courseRole = [];
+  let driveInfo = [];
+  if (drivesInfo.state === "hasValue") {
+    driveInfo = drivesInfo.contents.driveIdsAndLabels;
+    let selectedDriveInfo = driveInfo?.filter((item) => item.driveId == itemInfo.driveId);
+    courseRole = selectedDriveInfo[0]?.role;
+  }
+  if (itemInfo.isAssigned === "1" && courseRole[0] === "Owner") {
     assignmentForm = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h3", null, "Assignment Info"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Assigned Date:"), /* @__PURE__ */ React.createElement("input", {
       required: true,
       type: "text",
@@ -397,7 +410,8 @@ const DoenetMLInfoPanel = (props) => {
       value: aInfo ? aInfo?.assignedDate : "",
       placeholder: "0001-01-01 01:01:01 ",
       onBlur: handleOnBlur,
-      onChange: handleChange
+      onChange: handleChange,
+      onFocus: handleOnfocus
     })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Due date: "), /* @__PURE__ */ React.createElement("input", {
       required: true,
       type: "text",
@@ -405,7 +419,8 @@ const DoenetMLInfoPanel = (props) => {
       value: aInfo ? aInfo?.dueDate : "",
       placeholder: "0001-01-01 01:01:01",
       onBlur: handleOnBlur,
-      onChange: handleChange
+      onChange: handleChange,
+      onFocus: handleOnfocus
     })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Time Limit:"), /* @__PURE__ */ React.createElement("input", {
       required: true,
       type: "time",
@@ -413,14 +428,18 @@ const DoenetMLInfoPanel = (props) => {
       value: aInfo ? aInfo?.timeLimit : "",
       placeholder: "01:01:01",
       onBlur: handleOnBlur,
-      onChange: handleChange
-    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Number Of Attempts:"), /* @__PURE__ */ React.createElement("input", {
+      onChange: handleChange,
+      onFocus: handleOnfocus
+    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Number Of Attempts:"), /* @__PURE__ */ React.createElement(Increment, {
+      range: [0, 20]
+    }), /* @__PURE__ */ React.createElement("input", {
       required: true,
       type: "number",
       name: "numberOfAttemptsAllowed",
       value: aInfo ? aInfo?.numberOfAttemptsAllowed : "",
       onBlur: handleOnBlur,
-      onChange: handleChange
+      onChange: handleChange,
+      onFocus: handleOnfocus
     })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Attempt Aggregation :"), /* @__PURE__ */ React.createElement("select", {
       name: "attemptAggregation",
       onChange: handleOnBlur
@@ -436,59 +455,71 @@ const DoenetMLInfoPanel = (props) => {
       name: "totalPointsOrPercent",
       value: aInfo ? aInfo?.totalPointsOrPercent : "",
       onBlur: handleOnBlur,
-      onChange: handleChange
+      onChange: handleChange,
+      onFocus: handleOnfocus
     })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Grade Category: "), /* @__PURE__ */ React.createElement("input", {
       required: true,
       type: "select",
       name: "gradeCategory",
       value: aInfo ? aInfo?.gradeCategory : "",
       onBlur: handleOnBlur,
-      onChange: handleChange
-    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Individualize: "), /* @__PURE__ */ React.createElement("input", {
-      required: true,
-      type: "checkbox",
+      onChange: handleChange,
+      onFocus: handleOnfocus
+    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Individualize: "), /* @__PURE__ */ React.createElement(Switch, {
       name: "individualize",
-      checked: aInfo ? aInfo?.individualize : false,
-      onChange: handleOnBlur
-    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Multiple Attempts: "), /* @__PURE__ */ React.createElement("input", {
-      required: true,
-      type: "checkbox",
+      onChange: handleOnBlur,
+      checked: aInfo ? aInfo?.individualize : false
+    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Multiple Attempts: "), /* @__PURE__ */ React.createElement(Switch, {
       name: "multipleAttempts",
-      checked: aInfo ? aInfo?.multipleAttempts : false,
-      onChange: handleOnBlur
-    }), " "), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Show solution: "), /* @__PURE__ */ React.createElement("input", {
-      required: true,
-      type: "checkbox",
+      onChange: handleOnBlur,
+      checked: aInfo ? aInfo?.multipleAttempts : false
+    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Show solution: "), /* @__PURE__ */ React.createElement(Switch, {
       name: "showSolution",
-      checked: aInfo ? aInfo?.showSolution : false,
-      onChange: handleOnBlur
-    }), " "), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Show feedback: "), /* @__PURE__ */ React.createElement("input", {
-      required: true,
-      type: "checkbox",
+      onChange: handleOnBlur,
+      checked: aInfo ? aInfo?.showSolution : false
+    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Show feedback: "), /* @__PURE__ */ React.createElement(Switch, {
       name: "showFeedback",
-      checked: aInfo ? aInfo?.showFeedback : false,
-      onChange: handleOnBlur
-    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Show hints: "), /* @__PURE__ */ React.createElement("input", {
-      required: true,
-      type: "checkbox",
+      onChange: handleOnBlur,
+      checked: aInfo ? aInfo?.showFeedback : false
+    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Show hints: "), /* @__PURE__ */ React.createElement(Switch, {
       name: "showHints",
-      checked: aInfo ? aInfo?.showHints : false,
-      onChange: handleOnBlur
-    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Show correctness: "), /* @__PURE__ */ React.createElement("input", {
-      required: true,
-      type: "checkbox",
+      onChange: handleOnBlur,
+      checked: aInfo ? aInfo?.showHints : false
+    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Show correctness: "), /* @__PURE__ */ React.createElement(Switch, {
       name: "showCorrectness",
-      checked: aInfo ? aInfo?.showCorrectness : false,
-      onChange: handleOnBlur
-    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Proctor make available: "), /* @__PURE__ */ React.createElement("input", {
-      required: true,
-      type: "checkbox",
+      onChange: handleOnBlur,
+      checked: aInfo ? aInfo?.showCorrectness : false
+    })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", null, "Proctor make available: "), /* @__PURE__ */ React.createElement(Switch, {
       name: "proctorMakesAvailable",
-      checked: aInfo ? aInfo?.proctorMakesAvailable : false,
-      onChange: handleOnBlur
+      onChange: handleOnBlur,
+      checked: aInfo ? aInfo?.proctorMakesAvailable : false
     })), /* @__PURE__ */ React.createElement("br", null)));
   }
   return /* @__PURE__ */ React.createElement(React.Fragment, null, assignmentForm);
+};
+const StudentViewInfoPanel = (props) => {
+  let itemInfo = props.contentInfo;
+  const assignmentInfoSettings = useRecoilValueLoadable(assignmentDictionarySelector({
+    driveId: itemInfo.driveId,
+    folderId: itemInfo.parentFolderId,
+    itemId: itemInfo.itemId,
+    doenetId: itemInfo.doenetId,
+    versionId: "",
+    contentId: ""
+  }));
+  let aInfo = "";
+  const drivesInfo = useRecoilValueLoadable(fetchDrivesSelector);
+  let courseRole = [];
+  let driveInfo = [];
+  if (drivesInfo.state === "hasValue") {
+    driveInfo = drivesInfo.contents.driveIdsAndLabels;
+    let selectedDriveInfo = driveInfo?.filter((item) => item.driveId == itemInfo.driveId);
+    courseRole = selectedDriveInfo[0]?.role;
+  }
+  if (assignmentInfoSettings?.state === "hasValue") {
+    aInfo = assignmentInfoSettings?.contents;
+  }
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, aInfo && courseRole[0] === "Student" ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", null, "Due: ", aInfo?.dueDate), /* @__PURE__ */ React.createElement("p", null, "Time Limit: ", aInfo?.timeLimit), /* @__PURE__ */ React.createElement("p", null, "Number of Attempts Allowed: ", aInfo?.numberOfAttemptsAllowed), /* @__PURE__ */ React.createElement("p", null, "Points: ", aInfo?.totalPointsOrPercent)) : "");
 };
 const FolderInfoPanel = () => {
   return /* @__PURE__ */ React.createElement("h1", null, "Folder Info");
@@ -533,10 +564,18 @@ const VersionHistoryInfoPanel = (props) => {
       return "";
     }
   };
+  const drivesInfo = useRecoilValueLoadable(fetchDrivesSelector);
+  let courseRole = [];
+  let driveInfo = [];
+  if (drivesInfo.state === "hasValue") {
+    driveInfo = drivesInfo.contents.driveIdsAndLabels;
+    let selectedDriveInfo = driveInfo?.filter((item) => item.driveId == itemInfo.driveId);
+    courseRole = selectedDriveInfo[0]?.role;
+  }
   let aInfo = "";
   const assignmentInfoSettings = useRecoilValueLoadable(loadAssignmentSelector(itemInfo.doenetId));
   if (assignmentInfoSettings?.state === "hasValue") {
-    aInfo = assignmentInfoSettings?.contents?.assignments[0];
+    aInfo = assignmentInfoSettings?.contents?.assignments;
   }
   if (versionHistory.state === "loading") {
     return null;
@@ -594,7 +633,7 @@ const VersionHistoryInfoPanel = (props) => {
             updateVersionHistory(itemInfo.doenetId, selectedVId);
             try {
               if (result.success) {
-                addToast(`Add new assignment 'Untitled assignment'`, ToastType.SUCCESS);
+                addToast(`Add new assignment`, ToastType.SUCCESS);
               } else {
                 onAssignmentError({errorMessage: result.message});
               }
@@ -637,7 +676,7 @@ const VersionHistoryInfoPanel = (props) => {
             });
             result.then((resp) => {
               if (resp.data.success) {
-                addToast(`'version title' back to '${itemInfo.label}''`, ToastType.SUCCESS);
+                addToast(`'UnAssigned ${itemInfo.label}''`, ToastType.SUCCESS);
               } else {
                 onAssignmentError({errorMessage: resp.data.message});
               }
@@ -694,7 +733,7 @@ const VersionHistoryInfoPanel = (props) => {
             updatePrevVersionHistory(itemInfo.doenetId, prevAssignedVersionId());
             try {
               if (result.success) {
-                addToast(`Switch  assignment 'Untitled assignment'`, ToastType.SUCCESS);
+                addToast(`Switch  assignment`, ToastType.SUCCESS);
               } else {
                 onAssignmentError({errorMessage: result.message});
               }
@@ -762,12 +801,13 @@ const VersionHistoryInfoPanel = (props) => {
     key: i,
     value: item.versionId
   }, item.isAssigned == 1 ? "(Assigned)" : "", item.title) : "")));
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, assigned, /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("br", null), itemInfo.isAssigned !== "1" && makeAssignmentforReleasedButton, itemInfo.isAssigned == "1" && checkIfAssigned() && unAssignButton, itemInfo.isAssigned == "1" && checkAssignArrItemAssigned() && !checkIfAssigned() && switchAssignmentButton);
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, courseRole[0] === "Owner" && assigned, /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("br", null), courseRole[0] === "Owner" && itemInfo.isAssigned !== "1" && makeAssignmentforReleasedButton, itemInfo.isAssigned == "1" && checkIfAssigned() && unAssignButton, itemInfo.isAssigned == "1" && checkAssignArrItemAssigned() && !checkIfAssigned() && courseRole[0] === "Owner" && switchAssignmentButton);
 };
 const ItemInfoPanel = (props) => {
   let versionArr = [];
   const contentInfoLoad = useRecoilValueLoadable(selectedInformation);
   const versionHistory = useRecoilValueLoadable(itemHistoryAtom(contentInfoLoad?.contents?.itemInfo?.doenetId));
+  const drivesInfo = useRecoilValueLoadable(fetchDrivesSelector);
   if (versionHistory.state === "loading") {
     return null;
   }
@@ -785,17 +825,32 @@ const ItemInfoPanel = (props) => {
     console.error(contentInfoLoad.contents);
     return null;
   }
+  let courseRole = [];
+  let driveInfo = [];
+  if (drivesInfo.state === "hasValue") {
+    driveInfo = drivesInfo.contents.driveIdsAndLabels;
+    let selectedDriveInfo = driveInfo?.filter((item) => item.driveId == contentInfoLoad?.contents?.itemInfo?.driveId);
+    courseRole = selectedDriveInfo[0]?.role;
+  }
   let contentInfo = contentInfoLoad?.contents?.itemInfo;
   if (contentInfoLoad.contents?.number > 1) {
     return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h1", null, contentInfoLoad.contents.number, " Content Selected"));
   } else if (contentInfoLoad.contents?.number === 1) {
     if (contentInfo?.itemType === "DoenetML") {
-      return /* @__PURE__ */ React.createElement(DoenetMLInfoPanel, {
-        key: `DoenetMLInfoPanel${contentInfo.itemId}`,
-        contentInfo,
-        props,
-        versionArr
-      });
+      if (courseRole[0] === "Owner") {
+        return /* @__PURE__ */ React.createElement(DoenetMLInfoPanel, {
+          key: `DoenetMLInfoPanel${contentInfo.itemId}`,
+          contentInfo,
+          props,
+          versionArr
+        });
+      } else if (courseRole[0] === "Student") {
+        return /* @__PURE__ */ React.createElement(StudentViewInfoPanel, {
+          key: `StudentViewInfoPanel${contentInfo.itemId}`,
+          contentInfo,
+          props
+        });
+      }
     } else if (contentInfo?.itemType === "Folder") {
       return /* @__PURE__ */ React.createElement(FolderInfoPanel, {
         key: `FolderInfoPanel${contentInfo.itemId}`,
