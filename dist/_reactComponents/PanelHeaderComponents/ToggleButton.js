@@ -2,7 +2,7 @@ import React, {useState} from "../../_snowpack/pkg/react.js";
 import {doenetMainBlue} from "./theme.js";
 export default function ToggleButton(props) {
   const [isSelected, setSelected] = useState(props.isSelected ? props.isSelected : false);
-  const [labelVisible, setLabelVisible] = useState(props.label ? "inline" : "none");
+  const [labelVisible, setLabelVisible] = useState(props.label ? "static" : "none");
   var toggleButton = {
     margin: "0px",
     height: "24px",
@@ -14,17 +14,21 @@ export default function ToggleButton(props) {
     padding: "0px 10px 0px 10px",
     cursor: "pointer",
     fontSize: "12px",
-    textAlign: "center"
+    textAlign: "center",
+    width: "auto"
   };
+  var icon = "";
   var label = {
     value: "Label:",
     fontSize: "12px",
-    display: `${labelVisible}`
+    display: `${labelVisible}`,
+    marginRight: "5px"
   };
-  var icon = "";
-  if (props.size === "medium") {
-    toggleButton.height = "36px", toggleButton.fontSize = "18px", label.fontSize = "18px";
-  }
+  var container = {
+    display: "flex",
+    width: "auto",
+    alignItems: "center"
+  };
   if (props.value || props.icon) {
     if (props.value && props.icon) {
       icon = props.icon;
@@ -50,13 +54,24 @@ export default function ToggleButton(props) {
     if (isSelected === true) {
       setSelected(false);
     }
-    if (props.callback)
-      props.callback();
+    if (props.onClick)
+      props.onClick(isSelected);
   }
   if (props.label) {
     label.value = props.label;
   }
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", {
+  if (props.width) {
+    if (props.width === "menu") {
+      toggleButton.width = "235px";
+      if (props.label) {
+        container.width = "235px";
+        toggleButton.width = "100%";
+      }
+    }
+  }
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", {
+    style: container
+  }, /* @__PURE__ */ React.createElement("p", {
     style: label
   }, label.value), /* @__PURE__ */ React.createElement("button", {
     id: "toggleButton",
@@ -64,5 +79,5 @@ export default function ToggleButton(props) {
     onClick: () => {
       handleClick();
     }
-  }, icon, " ", toggleButton.value));
+  }, icon, " ", toggleButton.value)));
 }

@@ -22,8 +22,6 @@ import {
   useRecoilCallback
 } from "../_snowpack/pkg/recoil.js";
 import axios from "../_snowpack/pkg/axios.js";
-import "../_snowpack/pkg/codemirror/lib/codemirror.css.proxy.js";
-import "../_snowpack/pkg/codemirror/theme/material.css.proxy.js";
 import Drive, {
   globalSelectedNodesAtom,
   folderDictionary,
@@ -46,7 +44,6 @@ import DriveCards from "../_reactComponents/Drive/DriveCards.js";
 import "../_reactComponents/Drive/drivecard.css.proxy.js";
 import DoenetDriveCardMenu from "../_reactComponents/Drive/DoenetDriveCardMenu.js";
 import "../_utils/util.css.proxy.js";
-// import GlobalFont from "../_utils/GlobalFont.js";
 import {driveColors, driveImages} from "../_reactComponents/Drive/util.js";
 import Tool from "../_framework/Tool.js";
 import {useToolControlHelper, ProfileContext} from "../_framework/ToolRoot.js";
@@ -122,7 +119,7 @@ function User(props) {
         }, /* @__PURE__ */ React.createElement(Button, {
           "data-doenet-removeButton": props.userId,
           value: "Remove",
-          callback: (e) => {
+          onClick: (e) => {
             e.preventDefault();
             e.stopPropagation();
             onClick("");
@@ -142,7 +139,7 @@ function User(props) {
       }, /* @__PURE__ */ React.createElement(Button, {
         "data-doenet-removebutton": props.userId,
         value: "Promote to Owner",
-        callback: (e) => {
+        onClick: (e) => {
           e.preventDefault();
           e.stopPropagation();
           onClick("");
@@ -162,7 +159,7 @@ function User(props) {
         }, /* @__PURE__ */ React.createElement(Button, {
           "data-doenet-removebutton": props.userId,
           value: "Demote to Admin",
-          callback: (e) => {
+          onClick: (e) => {
             e.preventDefault();
             e.stopPropagation();
             onClick("");
@@ -240,10 +237,10 @@ function NewUser(props) {
     }
   }))), /* @__PURE__ */ React.createElement(Button, {
     value: "Submit",
-    callback: () => addUser()
+    onClick: () => addUser()
   }), /* @__PURE__ */ React.createElement(Button, {
     value: "Cancel",
-    callback: () => props.open(false)
+    onClick: () => props.open(false)
   }));
 }
 const DriveInfoPanel = function(props) {
@@ -276,7 +273,7 @@ const DriveInfoPanel = function(props) {
   if (isOwner) {
     addOwnersButton = /* @__PURE__ */ React.createElement(Button, {
       value: "+ Add Owner",
-      callback: () => {
+      onClick: () => {
         setAddOwners(true);
       }
     });
@@ -293,7 +290,7 @@ const DriveInfoPanel = function(props) {
   let addAdmins = null;
   let addAdminsButton = /* @__PURE__ */ React.createElement(Button, {
     value: "+ Add Administrator",
-    callback: () => {
+    onClick: () => {
       setAddAdmins(true);
     }
   });
@@ -349,7 +346,7 @@ const DriveInfoPanel = function(props) {
   if (isOwner) {
     deleteCourseButton = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Button, {
       value: "Delete Course",
-      callback: () => {
+      onClick: () => {
         setDrivesInfo({
           color: props.color,
           label: driveLabel,
@@ -452,7 +449,7 @@ const FolderInfoPanel = function(props) {
   })), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement(Button, {
     "data-cy": "deleteFolderButton",
     value: "Delete Folder",
-    callback: () => {
+    onClick: () => {
       const result = deleteItem({
         driveIdFolderId: {driveId: itemInfo.driveId, folderId: itemInfo.parentFolderId},
         itemId: itemInfo.itemId,
@@ -519,7 +516,7 @@ const DoenetMLInfoPanel = function(props) {
     }
   })), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement(Button, {
     value: "Edit DoenetML",
-    callback: () => {
+    onClick: () => {
       openOverlay({
         type: "editor",
         doenetId: itemInfo.doenetId,
@@ -532,7 +529,7 @@ const DoenetMLInfoPanel = function(props) {
   }), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement(Button, {
     "data-cy": "deleteDoenetMLButton",
     value: "Delete DoenetML",
-    callback: () => {
+    onClick: () => {
       const result = deleteItem({
         driveIdFolderId: {driveId: itemInfo.driveId, folderId: itemInfo.parentFolderId},
         itemId: itemInfo.itemId,
@@ -603,7 +600,8 @@ function AddCourseDriveButton() {
       type: "course",
       image,
       color,
-      subType: "Administrator"
+      subType: "Administrator",
+      role: ["Owner"]
     };
     const payload = {params: {
       driveId: newDriveId,
@@ -631,7 +629,7 @@ function AddCourseDriveButton() {
   return /* @__PURE__ */ React.createElement(Button, {
     value: "Create a New Course",
     "data-cy": "createNewCourseButton",
-    callback: () => {
+    onClick: () => {
       let driveId = null;
       let newDriveId = nanoid();
       let label = "Untitled";
@@ -668,7 +666,7 @@ function AddMenuPanel(props) {
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h3", null, "Folder"), /* @__PURE__ */ React.createElement(Button, {
     value: "Add Folder",
     "data-cy": "addFolderButton",
-    callback: () => {
+    onClick: () => {
       const result = addItem({
         driveIdFolderId: {driveId, folderId},
         label: "Untitled",
@@ -687,7 +685,7 @@ function AddMenuPanel(props) {
   }), /* @__PURE__ */ React.createElement("h3", null, "DoenetML"), /* @__PURE__ */ React.createElement(Button, {
     value: "Add DoenetML",
     "data-cy": "addDoenetMLButton",
-    callback: () => {
+    onClick: () => {
       const result = addItem({
         driveIdFolderId: {driveId, folderId},
         label: "Untitled",
@@ -771,9 +769,7 @@ export default function Library(props) {
   const history = useHistory();
   const profile = useContext(ProfileContext);
   if (profile.signedIn === "0" && !window.Cypress) {
-    return /* @__PURE__ */ React.createElement(React.Fragment, null, 
-      // /* @__PURE__ */ React.createElement(GlobalFont, null), 
-      /* @__PURE__ */ React.createElement(Tool, null, /* @__PURE__ */ React.createElement("headerPanel", {
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Tool, null, /* @__PURE__ */ React.createElement("headerPanel", {
       title: "Library"
     }), /* @__PURE__ */ React.createElement("mainPanel", null, /* @__PURE__ */ React.createElement("div", {
       style: {border: "1px solid grey", borderRadius: "20px", margin: "auto", marginTop: "10%", padding: "10px", width: "50%"}
@@ -797,9 +793,7 @@ export default function Library(props) {
   let supportBreadcrumbContainer = /* @__PURE__ */ React.createElement(BreadcrumbContainer, {
     drivePathSyncKey: "support"
   });
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, 
-    // /* @__PURE__ */ React.createElement(GlobalFont, null), 
-    /* @__PURE__ */ React.createElement(URLPathSync, {
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(URLPathSync, {
     route: props.route
   }), /* @__PURE__ */ React.createElement(Tool, null, /* @__PURE__ */ React.createElement("navPanel", {
     isInitOpen: true
@@ -843,8 +837,7 @@ export default function Library(props) {
     className: routePathDriveId ? "" : "mainPanelStyle"
   }, /* @__PURE__ */ React.createElement(DriveCards, {
     drivePathSyncKey: "main",
-    types: ["course"],
-    subTypes: ["Administrator"]
+    types: ["course"]
   }))), /* @__PURE__ */ React.createElement("supportPanel", null, supportBreadcrumbContainer, /* @__PURE__ */ React.createElement(Container, null, /* @__PURE__ */ React.createElement(Drive, {
     drivePathSyncKey: "support",
     types: ["content", "course"],
@@ -866,8 +859,7 @@ export default function Library(props) {
     className: routePathDriveId ? "" : "mainPanelStyle"
   }, /* @__PURE__ */ React.createElement(DriveCards, {
     drivePathSyncKey: "support",
-    types: ["course"],
-    subTypes: ["Administrator"]
+    types: ["course"]
   }))), /* @__PURE__ */ React.createElement("menuPanel", {
     title: "Selected",
     isInitOpen: true
