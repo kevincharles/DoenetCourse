@@ -465,6 +465,7 @@ function DoenetViewerUpdateButton() {
         let newInfo = {...old};
         newInfo.doenetML = editorDoenetML;
         newInfo.updateNumber = old.updateNumber + 1;
+        console.log(">>>Update newInfo", newInfo);
         return newInfo;
       });
     }
