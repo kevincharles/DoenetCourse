@@ -229,6 +229,8 @@ export default function ToolRoot(props){
     SignIn:lazy(() => import('./ToolPanels/SignIn')),
     SignOut:lazy(() => import('./ToolPanels/SignOut')),
     DrivePanel:lazy(() => import('./ToolPanels/DrivePanel')),
+    EditorViewer:lazy(() => import('./ToolPanels/EditorViewer')),
+    DoenetMLEditor:lazy(() => import('./ToolPanels/DoenetMLEditor')),
   }).current;
 
   const LazyControlObj = useRef({

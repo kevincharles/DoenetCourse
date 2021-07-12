@@ -160,39 +160,65 @@ export default function CourseToolHandler(props){
     // if (tool === lastAtomTool){ return; }
 
       if (tool === 'courseChooser'){
-        set(toolViewAtom,(was)=>{
-          let newObj = {...was}
-          newObj.currentMainPanel = "DriveCards";
-          newObj.currentMenus = ["CreateCourse","CourseEnroll"];
-          newObj.menusTitles = ["Create Course","Enroll"];
-          newObj.menusInitOpen = [true,false];
-          return newObj;
-        });
+        // set(toolViewAtom,(was)=>{
+        //   let newObj = {...was}
+        //   newObj.currentMainPanel = "DriveCards";
+        //   newObj.currentMenus = ["CreateCourse","CourseEnroll"];
+        //   newObj.menusTitles = ["Create Course","Enroll"];
+        //   newObj.menusInitOpen = [true,false];
+        //   return newObj;
+        // });
+
+        set(toolViewAtom,{
+          pageName:"Course",
+          currentMainPanel:"DriveCards",
+          currentMenus:["CreateCourse","CourseEnroll"],
+          menusTitles:["Create Course","Enroll"],
+          menusInitOpen:[true,false],
+          toolHandler:"CourseToolHandler"
+        })
+
         set(selectedMenuPanelAtom,""); //clear selection
         set(mainPanelClickAtom,[{atom:drivecardSelectedNodesAtom,value:[]},{atom:selectedMenuPanelAtom,value:""}])
       }else if (tool === 'navigation'){
         // if (role === "Student"){
           //TODO
         // }else if (role === "Owner" || role === "Admin"){
-            set(toolViewAtom,(was)=>{
-              let newObj = {...was}
-              newObj.currentMainPanel = "DrivePanel";
-              newObj.currentMenus = ["AddDriveItems","EnrollStudents"];
-              newObj.menusTitles = ["Add Items","Enrollment"];
-              newObj.menusInitOpen = [true,false];
 
-              return newObj;
-            });
+            // set(toolViewAtom,(was)=>{
+            //   let newObj = {...was}
+            //   newObj.currentMainPanel = "DrivePanel";
+            //   newObj.currentMenus = ["AddDriveItems","EnrollStudents"];
+            //   newObj.menusTitles = ["Add Items","Enrollment"];
+            //   newObj.menusInitOpen = [true,false];
+
+            //   return newObj;
+            // });
+            set(toolViewAtom,{
+              pageName:"Course",
+              currentMainPanel:"DrivePanel",
+              currentMenus:["AddDriveItems","EnrollStudents"],
+              menusTitles:["Add Items","Enrollment"],
+              menusInitOpen:[true,false],
+              toolHandler:"CourseToolHandler"
+            })
+
+
         // }
         set(selectedMenuPanelAtom,""); //clear selection
         set(mainPanelClickAtom,[{atom:globalSelectedNodesAtom,value:[]},{atom:selectedMenuPanelAtom,value:""}])
       }else if (tool === 'editor'){
-        console.log(">>>editor!")
-        // set(toolViewAtom,(was)=>{
-        //   let newObj = {...was}
-        //   newObj.currentMainPanel = "DriveCards";
-        //   return newObj;
-        // });
+        set(toolViewAtom,{
+          pageName:"Course",
+          currentMainPanel:"EditorViewer",
+          currentMenus:["DoenetMLSettings","VersionHistory","Variant"], //DoenetMLSettings
+          menusTitles:["Settings","Version History","Variant"],
+          menusInitOpen:[false,false,false],
+          supportPanelOptions:["DoenetMLEditor"],
+          supportPanelTitles:["DoenetML Editor"],
+          supportPanelIndex:0,
+          toolHandler:"CourseToolHandler"
+        })
         set(selectedMenuPanelAtom,""); //clear selection
         set(mainPanelClickAtom,[])  //clear main panel click
       }else{
